@@ -4,6 +4,7 @@ import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
 import com.sparta.trello.domain.column.dto.ModifyColumnNameRequest;
+import com.sparta.trello.domain.column.dto.ModifyColumnSequenceRequest;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
 import java.util.NoSuchElementException;
@@ -34,6 +35,30 @@ public class ColumnService {
         Columns columns = validateExistColumn(columnId);
 
         columns.setColumnName(request.getColumnName());
+    }
+
+    public void deleteColumn(Long columnId) {
+        columnRepository.deleteById(columnId);
+    }
+
+    @Transactional
+    public void modifyColumnSequence(Long boardId, Long columnId, ModifyColumnSequenceRequest request) {
+        Columns columns = validateExistColumn(columnId);
+
+        Long between = (request.getPrevSequence() + request.getNextSequence()) / 2;
+
+        if(between.equals(request.getPrevSequence())) {
+            Columns prevColumns = columnRepository.findBySequence(boardId, request.getPrevSequence());
+
+            prevColumns.setSequence(columns.getSequence());
+        }
+        else if(between.equals(request.getNextSequence())) {
+            Columns nextColumns = columnRepository.findBySequence(boardId, request.getNextSequence());
+
+            nextColumns.setSequence(columns.getSequence());
+        }
+
+        columns.setSequence(between);
     }
 
     private Columns validateExistColumn(Long columnId) {

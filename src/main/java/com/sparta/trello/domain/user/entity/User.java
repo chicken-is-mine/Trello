@@ -37,5 +37,10 @@ public class User {
     @Column
     private String profile;
 
-
+    public User(String email, String password, String username, String profile) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.profile = profile;
+    }
 }

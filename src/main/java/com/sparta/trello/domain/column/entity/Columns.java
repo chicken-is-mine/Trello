@@ -1,7 +1,7 @@
 package com.sparta.trello.domain.column.entity;
 
 import com.sparta.trello.domain.board.entity.Board;
-import com.sparta.trello.domain.column.dto.ColumnCreateRequest;
+import com.sparta.trello.domain.column.dto.CreateColumnRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,10 +15,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor
@@ -40,7 +42,7 @@ public class Columns {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    public Columns(ColumnCreateRequest request, Board board) {
+    public Columns(CreateColumnRequest request, Board board) {
         this.columnName = request.getColumnName();
         this.sequence = request.getSequence();
         this.board = board;

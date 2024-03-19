@@ -3,10 +3,12 @@ package com.sparta.trello.domain.column.service;
 import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
+import com.sparta.trello.domain.column.dto.GetColumnResponse;
 import com.sparta.trello.domain.column.dto.ModifyColumnNameRequest;
 import com.sparta.trello.domain.column.dto.ModifyColumnSequenceRequest;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,18 +44,20 @@ public class ColumnService {
     }
 
     @Transactional
-    public void modifyColumnSequence(Long boardId, Long columnId, ModifyColumnSequenceRequest request) {
+    public void modifyColumnSequence(Long boardId, Long columnId,
+        ModifyColumnSequenceRequest request) {
         Columns columns = validateExistColumn(columnId);
 
         Long between = (request.getPrevSequence() + request.getNextSequence()) / 2;
 
-        if(between.equals(request.getPrevSequence())) {
-            Columns prevColumns = columnRepository.findBySequence(boardId, request.getPrevSequence());
+        if (between.equals(request.getPrevSequence())) {
+            Columns prevColumns = columnRepository.findBySequence(boardId,
+                request.getPrevSequence());
 
             prevColumns.setSequence(columns.getSequence());
-        }
-        else if(between.equals(request.getNextSequence())) {
-            Columns nextColumns = columnRepository.findBySequence(boardId, request.getNextSequence());
+        } else if (between.equals(request.getNextSequence())) {
+            Columns nextColumns = columnRepository.findBySequence(boardId,
+                request.getNextSequence());
 
             nextColumns.setSequence(columns.getSequence());
         }
@@ -71,5 +75,10 @@ public class ColumnService {
         return boardRepository.findById(boardId).orElseThrow(
             () -> new NoSuchElementException("해당 보드를 찾을 수 없습니다.")
         );
+    }
+
+    public List<GetColumnResponse> getColumnsOrderBySequence(Long boardId) {
+        return columnRepository.findAllByBoardIdOrderBySequence(boardId).stream()
+            .map(GetColumnResponse::new).toList();
     }
 }

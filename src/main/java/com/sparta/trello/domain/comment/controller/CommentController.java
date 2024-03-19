@@ -33,7 +33,15 @@ public class CommentController {
             .httpCode(201)
             .build();
     }
+    @PatchMapping("/{commentId}")
+    public CommonResponse updateComment(@PathVariable Long cardId,@PathVariable Long commentId,@RequestBody CommentRequest request,
+        UserDetailsImpl userDetails){
+        commentService.updateComment(cardId,commentId,request,userDetails.getUser());
 
+        return CommonResponse.builder()
+            .httpCode(204)
+            .build();
+    }
 
 
 }

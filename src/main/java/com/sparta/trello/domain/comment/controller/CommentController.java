@@ -7,6 +7,7 @@ import com.sparta.trello.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,6 +38,14 @@ public class CommentController {
     public CommonResponse updateComment(@PathVariable Long cardId,@PathVariable Long commentId,@RequestBody CommentRequest request,
         UserDetailsImpl userDetails){
         commentService.updateComment(cardId,commentId,request,userDetails.getUser());
+
+        return CommonResponse.builder()
+            .httpCode(204)
+            .build();
+    }
+    @DeleteMapping("/{commentId}")
+    public CommonResponse deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
 
         return CommonResponse.builder()
             .httpCode(204)

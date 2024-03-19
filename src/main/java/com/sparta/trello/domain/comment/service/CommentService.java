@@ -35,4 +35,9 @@ public class CommentService {
             throw new IllegalArgumentException("선택한 카드는 존재하지 않습니다.");
         }
     }
+
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("존재 하지 않는 댓글입니다"));
+        commentRepository.delete(comment);
+    }
 }

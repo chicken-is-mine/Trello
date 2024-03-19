@@ -2,12 +2,14 @@ package com.sparta.trello.domain.column.controller;
 
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
 import com.sparta.trello.domain.column.dto.ModifyColumnNameRequest;
+import com.sparta.trello.domain.column.dto.ModifyColumnSequenceRequest;
 import com.sparta.trello.domain.column.service.ColumnService;
 import com.sparta.trello.global.dto.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +47,31 @@ public class ColumnController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<Void>builder()
-                .httpCode(HttpStatus.CREATED.value()).build());
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+    }
+
+    @DeleteMapping("/boards/{boardId}/columns/{columnId}")
+    public ResponseEntity<CommonResponse<Void>> deleteColumn(
+        @PathVariable Long boardId,
+        @PathVariable Long columnId
+    ) {
+        columnService.deleteColumn(columnId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<Void>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+    }
+
+    @PatchMapping("/boards/{boardId}/columns/{columnId}/sequence")
+    public ResponseEntity<CommonResponse<Void>> modifyColumnSequence(
+        @PathVariable Long boardId,
+        @PathVariable Long columnId,
+        @RequestBody ModifyColumnSequenceRequest request
+    ) {
+        columnService.modifyColumnSequence(boardId, columnId, request);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<Void>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
     }
 }

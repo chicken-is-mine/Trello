@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class BoardRepositoryImpl implements BoardRepository {
-
-  private final BoardJpaRepository boardJpaRepository;
-  private final JPAQueryFactory jpaQueryFactory;
+public class BoardRepositoryImpl implements CustomBoardRepository {
 
 }

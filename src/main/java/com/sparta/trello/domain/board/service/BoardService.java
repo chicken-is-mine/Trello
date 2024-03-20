@@ -6,7 +6,7 @@ import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.entity.BoardColorEnum;
 import com.sparta.trello.domain.board.entity.BoardRoleEnum;
 import com.sparta.trello.domain.board.entity.BoardUser;
-import com.sparta.trello.domain.board.repository.BoardJpaRepository;
+import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class BoardService {
-
-  private final BoardJpaRepository boardRepository;
+  private final BoardRepository boardRepository;
   private final UserRepository userRepository;
   private final BoardUserJpaRepository boardUserJpaRepository;
 

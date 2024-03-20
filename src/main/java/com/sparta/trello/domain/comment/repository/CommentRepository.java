@@ -1,8 +1,8 @@
 package com.sparta.trello.domain.comment.repository;
 
-import org.hibernate.annotations.Comments;
+import com.sparta.trello.domain.comment.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CommentRepository extends JpaRepository<Comments, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
 
 }

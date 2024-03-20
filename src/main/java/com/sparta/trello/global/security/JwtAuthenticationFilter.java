@@ -50,9 +50,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
         HttpServletResponse response, FilterChain chain, Authentication authResult)
         throws IOException {
-        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        String email = ((UserDetailsImpl) authResult.getPrincipal()).getEmail();
 
-        String token = jwtUtil.createToken(username);
+        String token = jwtUtil.createToken(email);
         response.addHeader(jwtUtil.AUTHORIZATION_HEADER, token);
 
         jwtMessage.messageToClient(response, 200, "로그인 성공", "success");

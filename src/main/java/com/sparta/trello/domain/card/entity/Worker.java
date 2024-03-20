@@ -1,6 +1,7 @@
 package com.sparta.trello.domain.card.entity;
 
 import com.sparta.trello.domain.user.entity.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,8 +34,12 @@ public class Worker {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id", nullable = false)
+    @JoinColumn(name = "card_id")
     private Card card;
+
+    public Worker(User user) {
+        this.user = user;
+    }
 
     public Worker(User user, Card card) {
         this.user = user;

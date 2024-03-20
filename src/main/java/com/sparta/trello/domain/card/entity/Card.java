@@ -1,8 +1,11 @@
 package com.sparta.trello.domain.card.entity;
 
+import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.column.entity.Columns;
+import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.entity.Timestamped;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,19 +15,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Table(name = "TB_CARD")
 public class Card extends Timestamped {
 
@@ -38,11 +42,11 @@ public class Card extends Timestamped {
     @Lob
     private String description;
 
-    @Column(nullable = false)
+    @Column
     private String color;
 
-    @Column(nullable = false)
-    private String dudDate;
+    @Column
+    private LocalDateTime dueDate;
 
     @Column(nullable = false)
     private int sequence;
@@ -55,4 +59,49 @@ public class Card extends Timestamped {
     @JoinColumn(name = "column_id", nullable = false)
     private Columns column;
 
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    private List<Worker> workers;
+
+
+    public Card(String cardName, String description, String color, LocalDateTime dueDate, int sequence, User user, Columns columns) {
+        this.cardName = cardName;
+        this.description = description;
+        this.color = color;
+        this.dueDate = dueDate;
+        this.sequence = sequence;
+        this.user = user;
+        this.column = columns;
+    }
+
+    public Card(CardRequest request, Columns columns, User user) {
+        this.cardName = request.getCardName();
+        this.sequence = request.getSequence();
+        this.column = columns;
+        this.user = user;
+    }
+
+    public void updateCardName(String cardName) {
+        this.cardName = cardName;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateColor(String color) {
+        this.color = color;
+    }
+
+    public void updateDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void addWorker(User user) {
+        Worker worker = new Worker(user, this);
+        workers.add(worker);
+    }
+
+    public void removeWorker(Worker worker) {
+        workers.remove(worker);
+    }
 }

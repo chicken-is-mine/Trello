@@ -22,11 +22,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    // 사용자 권한 값의 KEY
-    public static final String AUTHORIZATION_KEY = "auth";
-    // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
-    // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
@@ -75,12 +71,7 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-    public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(7);
-        }
-        throw new NullPointerException("Not Found Token");
-    }
+
 
 
 

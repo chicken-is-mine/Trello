@@ -18,7 +18,7 @@ public class CommentService {
     CardRepository cardRepository;
     public void createComment(Long id, CommentRequest request, User user) {
         Card card = cardRepository.findById(id) .orElseThrow(() -> new NullPointerException("존재 하지 않는 카드입니다"));
-
+        //todo: user 검증
         Comment comment = new Comment(request,card,user);
         commentRepository.save(comment);
 

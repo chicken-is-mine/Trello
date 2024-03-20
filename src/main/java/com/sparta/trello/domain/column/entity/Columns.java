@@ -1,6 +1,8 @@
 package com.sparta.trello.domain.column.entity;
 
 import com.sparta.trello.domain.board.entity.Board;
+import com.sparta.trello.domain.column.dto.CreateColumnRequest;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,10 +15,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor
@@ -28,19 +32,19 @@ public class Columns {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long columnId;
 
-    @jakarta.persistence.Column(nullable = false)
+    @Column(nullable = false)
     private String columnName;
 
-    @jakarta.persistence.Column(nullable = false)
-    private Integer sequence;
+    @Column(nullable = false)
+    private Long sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-//    public Column(ColumnCreateRequest request, Board board) {
-//        this.columnName = request.columnName;
-//        this.sequence = request.sequence;
-//        this.board = board;
-//    }
+    public Columns(CreateColumnRequest request, Board board) {
+        this.columnName = request.getColumnName();
+        this.sequence = request.getSequence();
+        this.board = board;
+    }
 }

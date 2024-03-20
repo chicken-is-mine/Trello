@@ -32,12 +32,14 @@ public class QCard extends EntityPathBase<Card> {
 
     public final com.sparta.trello.domain.column.entity.QColumns column;
 
+    public final ListPath<com.sparta.trello.domain.comment.entity.Comment, com.sparta.trello.domain.comment.entity.QComment> comments = this.<com.sparta.trello.domain.comment.entity.Comment, com.sparta.trello.domain.comment.entity.QComment>createList("comments", com.sparta.trello.domain.comment.entity.Comment.class, com.sparta.trello.domain.comment.entity.QComment.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath description = createString("description");
 
-    public final StringPath dudDate = createString("dudDate");
+    public final DateTimePath<java.time.LocalDateTime> dueDate = createDateTime("dueDate", java.time.LocalDateTime.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
@@ -45,6 +47,8 @@ public class QCard extends EntityPathBase<Card> {
     public final NumberPath<Integer> sequence = createNumber("sequence", Integer.class);
 
     public final com.sparta.trello.domain.user.entity.QUser user;
+
+    public final ListPath<Worker, QWorker> workers = this.<Worker, QWorker>createList("workers", Worker.class, QWorker.class, PathInits.DIRECT2);
 
     public QCard(String variable) {
         this(Card.class, forVariable(variable), INITS);

@@ -1,8 +1,10 @@
-package com.sparta.trello.domain.card.entity;
+package com.sparta.trello.domain.board.entity;
 
 import com.sparta.trello.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,38 +13,34 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Getter
-@Builder
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "TB_WORKER")
-public class Worker {
-
+@Table(name = "TB_BOARD_USER")
+public class BoardUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long workerId;
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id")
-    private Card card;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BoardRoleEnum boardRole;
 
-    public Worker(User user) {
+    public BoardUser(Board board, User user, BoardRoleEnum boardRole) {
+        this.board = board;
         this.user = user;
-    }
-
-    public Worker(User user, Card card) {
-        this.user = user;
-        this.card = card;
+        this.boardRole = boardRole;
     }
 }

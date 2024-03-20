@@ -59,7 +59,7 @@ public class Card extends Timestamped {
     @JoinColumn(name = "column_id", nullable = false)
     private Columns column;
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
 
 

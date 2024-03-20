@@ -1,11 +1,15 @@
 package com.sparta.trello.domain.card.repository;
 
 import com.querydsl.core.types.Projections;
+import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.QCard;
 import com.sparta.trello.domain.card.entity.QWorker;
 import com.sparta.trello.domain.card.entity.Worker;
+import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.comment.entity.QComment;
+import com.sparta.trello.domain.user.entity.QUser;
+import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.config.QueryDslConfig;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +28,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .select(Projections.constructor(CardSummary.class,
                 card.cardId,
                 card.cardName,
-                Projections.list(Projections.fields(Worker.class, worker.user).as("workers")),
+                Projections.list(Projections.fields(Worker.class, worker.user.username).as("workers")),
                 comment.count()))
             .from(card)
             .leftJoin(card.workers, worker)
@@ -35,28 +39,28 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .fetch();
     }
 
-//    @Override
-//    public List<CardDetails> findCardDetailsByColumnId(Long columnId, Long cardId) {
-//        QCard card = QCard.card;
-//        QWorker worker = QWorker.worker;
-//        QUser user = QUser.user;
-//        QComment comment = QComment.comment;
-//
-//        return queryDslConfig.jpaQueryFactory()
-//            .select(Projections.constructor(CardDetails.class,
-//                card.cardId,
-//                card.cardName,
-//                card.description,
-//                card.color,
-//                card.dueDate,
-//                Projections.constructor(Worker.class, worker.user), // Worker 엔티티의 생성자 호출
-//                Projections.bean(User.class, user.username),
-//                Projections.bean(Comment.class, comment.commentId, comment.content)
-//            ))
-//            .from(card)
-//            .leftJoin(card.workers, worker)
+    @Override
+    public List<CardDetails> findCardDetailsByColumnId(Long columnId, Long cardId) {
+        QCard card = QCard.card;
+        QWorker worker = QWorker.worker;
+        QUser user = QUser.user;
+        QComment comment = QComment.comment;
+
+        return queryDslConfig.jpaQueryFactory()
+            .select(Projections.constructor(CardDetails.class,
+                card.cardId,
+                card.cardName,
+                card.description,
+                card.color,
+                card.dueDate,
+                Projections.constructor(Worker.class, worker.user), // Worker 엔티티의 생성자 호출
+                Projections.bean(User.class, user.username),
+                Projections.bean(Comment.class, comment.commentId, comment.content)
+            ))
+            .from(card)
+            .leftJoin(card.workers, worker)
 //            .leftJoin(card.comments, comment)
-//            .where(card.column.columnId.eq(columnId))
-//            .fetch();
-//    }
+            .where(card.column.columnId.eq(columnId))
+            .fetch();
+    }
 }

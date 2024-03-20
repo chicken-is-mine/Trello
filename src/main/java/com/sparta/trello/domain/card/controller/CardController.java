@@ -34,7 +34,7 @@ public class CardController {
         return new ResponseEntity<>(new CardResponse(card), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/cards/{cardId)")
+    @PatchMapping("/cards/{cardId}")
     public ResponseEntity<CardResponse> updateCard(
         @PathVariable Long columnId,
         @PathVariable Long cardId,

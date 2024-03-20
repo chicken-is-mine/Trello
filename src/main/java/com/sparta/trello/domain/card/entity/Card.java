@@ -57,7 +57,7 @@ public class Card extends Timestamped {
     @JoinColumn(name = "column_id", nullable = false)
     private Columns column;
 
-    @OneToMany(mappedBy = "card")
+    @OneToMany
     private List<Worker> workers;
 
 

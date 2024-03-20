@@ -54,7 +54,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                     comment.commentId,
                     comment.content).as("comments")))
             .from(card)
-            .leftJoin(worker).on(card.eq(worker.card))
+            .leftJoin(card.workers, worker).fetchJoin()
             .leftJoin(comment).on(card.eq(comment.card))
             .where(card.column.columnId.eq(columnId))
             .fetch();

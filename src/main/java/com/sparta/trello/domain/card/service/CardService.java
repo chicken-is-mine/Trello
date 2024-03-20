@@ -1,18 +1,21 @@
 package com.sparta.trello.domain.card.service;
 
-import com.sparta.trello.domain.board.entity.Board;
-import com.sparta.trello.domain.board.repository.BoardRepository;
+import com.sparta.trello.domain.board.entity.BoardUser;
+import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
+import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardRequest;
+import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.dto.CardUpdateRequest;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.card.repository.CardRepository;
-import com.sparta.trello.domain.card.repository.WorkerRepository;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,20 +24,36 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CardService {
     private final CardRepository cardRepository;
-    private final BoardRepository boardRepository;
     private final ColumnRepository columnRepository;
-    private final WorkerRepository workerRepository;
     private final UserRepository userRepository;
+    private final BoardUserJpaRepository boardUserJpaRepository;
 
+    //카드 생성
+    @Transactional
     public Card createCard(Long columnId, CardRequest request, User user) {
         Columns columns = findColumn(columnId);
         return cardRepository.save(new Card(request, columns, user));
     }
 
+    //카드 요약
+    public List<CardSummary> getCardSummary(Long columnId) {
+        return cardRepository.findCardsSummaryByColumnId(columnId);
+    }
+
+    //카드 상세 정보
+//    public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
+//        return cardRepository.findCardDetailsByColumnId(columnId, cardId);
+//    }
+
+    //카드 업데이트
     @Transactional
     public Card updateCard(Long columnId, Long cardId, CardUpdateRequest updateRequest, User user) {
         findColumn(columnId);
         Card card = findCard(cardId);
+        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
+        if(!boardUserOptional.isPresent()) {
+            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
+        }
 
         boolean updated = false;
         if (updateRequest.getCardName() != null && !updateRequest.getCardName().equals(card.getCardName())) {
@@ -72,7 +91,7 @@ public class CardService {
             updated = true;
         }
 
-        // 변경된 내용이 있을 경우에만 저장합니다.
+        // 변경된 내용이 있을 경우에만 저장
         if (updated) {
             cardRepository.save(card);
         }
@@ -80,31 +99,24 @@ public class CardService {
         return card;
     }
 
+    //카드 삭제
+    @Transactional
     public void deleteCard(Long columnId, Long cardId, User user) {
         findColumn(columnId);
+        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
+        if(!boardUserOptional.isPresent()) {
+            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
+        }
         Card card = findCard(cardId);
         cardRepository.delete(card);
     }
 
-    private User findUser(User user) {
-        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
-    }
-
-    private Board findBoard(Long boardId) {
-        return boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Board not found"));
-    }
 
     private Columns findColumn(Long columnId) {
         return columnRepository.findById(columnId).orElseThrow(() -> new IllegalArgumentException("Column not found"));
     }
 
-    private Worker findWorker(Long workerId) {
-        return workerRepository.findById(workerId).orElseThrow(() -> new IllegalArgumentException("Worker not found"));
-    }
-
     private Card findCard(Long cardId) {
         return cardRepository.findById(cardId).orElseThrow(() -> new IllegalArgumentException("Card not found"));
     }
-
-
 }

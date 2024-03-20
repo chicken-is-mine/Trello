@@ -2,8 +2,10 @@ package com.sparta.trello.domain.card.entity;
 
 import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.column.entity.Columns;
+import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.entity.Timestamped;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,10 +42,10 @@ public class Card extends Timestamped {
     @Lob
     private String description;
 
-    @Column(nullable = false)
+    @Column
     private String color;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime dueDate;
 
     @Column(nullable = false)
@@ -57,7 +59,7 @@ public class Card extends Timestamped {
     @JoinColumn(name = "column_id", nullable = false)
     private Columns column;
 
-    @OneToMany
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
     private List<Worker> workers;
 
 
@@ -95,7 +97,7 @@ public class Card extends Timestamped {
     }
 
     public void addWorker(User user) {
-        Worker worker = new Worker(user);
+        Worker worker = new Worker(user, this);
         workers.add(worker);
     }
 

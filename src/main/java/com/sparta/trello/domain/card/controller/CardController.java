@@ -1,16 +1,21 @@
 package com.sparta.trello.domain.card.controller;
 
+import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.card.dto.CardResponse;
+import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.dto.CardUpdateRequest;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.service.CardService;
+import com.sparta.trello.global.dto.CommonResponse;
 import com.sparta.trello.global.security.UserDetailsImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +37,21 @@ public class CardController {
     ) {
         Card card = cardService.createCard(columnId, request, userDetails.getUser());
         return new ResponseEntity<>(new CardResponse(card), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/cards")
+    public ResponseEntity<List<CardSummary>> getCardSummary(@PathVariable Long columnId) {
+        List<CardSummary> cardSummaries = cardService.getCardSummary(columnId);
+        return new ResponseEntity<>(cardSummaries, HttpStatus.OK);
+    }
+
+    @GetMapping("/cards/{cardId}")
+    public ResponseEntity<List<CardDetails>> getCardDetails(
+        @PathVariable Long columnId,
+        @PathVariable Long cardId
+    ) {
+        List<CardDetails> cardDetails = cardService.getCardDetails(columnId,cardId);
+        return new ResponseEntity<>(cardDetails, HttpStatus.OK);
     }
 
     @PatchMapping("/cards/{cardId}")

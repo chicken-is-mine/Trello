@@ -32,6 +32,8 @@ public class QCard extends EntityPathBase<Card> {
 
     public final com.sparta.trello.domain.column.entity.QColumns column;
 
+    public final ListPath<com.sparta.trello.domain.comment.entity.Comment, com.sparta.trello.domain.comment.entity.QComment> comments = this.<com.sparta.trello.domain.comment.entity.Comment, com.sparta.trello.domain.comment.entity.QComment>createList("comments", com.sparta.trello.domain.comment.entity.Comment.class, com.sparta.trello.domain.comment.entity.QComment.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

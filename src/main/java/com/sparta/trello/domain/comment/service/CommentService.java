@@ -1,12 +1,17 @@
 package com.sparta.trello.domain.comment.service;
 
+import com.sparta.trello.domain.board.entity.BoardUser;
+import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.comment.dto.CommentRequest;
 import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.comment.repository.CommentRepository;
 import com.sparta.trello.domain.user.entity.User;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,30 +19,53 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommentService {
 
-    CommentRepository commentRepository;
-    CardRepository cardRepository;
-    public void createComment(Long id, CommentRequest request, User user) {
-        Card card = cardRepository.findById(id) .orElseThrow(() -> new NullPointerException("존재 하지 않는 카드입니다"));
-        //todo: user 검증
-        Comment comment = new Comment(request,card,user);
-        commentRepository.save(comment);
+    private final CommentRepository commentRepository;
+    private final CardRepository cardRepository;
+    private final BoardUserJpaRepository boardUserJpaRepository;
 
+    public void createComment(Long id, CommentRequest request, User user) {
+
+        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
+        if (!boardUserOptional.isPresent()) {
+            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
+        }
+
+        Card card = cardRepository.findById(id)
+            .orElseThrow(() -> new NullPointerException("존재 하지 않는 카드입니다"));
+
+        Comment comment = new Comment(request, card, user);
+        commentRepository.save(comment);
     }
 
     @Transactional
-    public void updateComment(Long cardId, Long commentId, CommentRequest request, User user) {
-        Card card = cardRepository.findById(cardId).orElseThrow(() -> new NullPointerException("존재 하지 않는 카드입니다"));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("존재 하지 않는 댓글입니다"));
-        //todo: user 검증
-        if(card.getCardId() == comment.getCard().getCardId()){
-        comment.update(request);
-        }else {
-            throw new IllegalArgumentException("선택한 카드는 존재하지 않습니다.");
-        }
+    public void updateComment(Long commentId, CommentRequest request, User user) {
+
+        workspaceUser(user);
+
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new EntityNotFoundException("존재 하지 않는 댓글입니다"));
+
+        if (comment.getUser().getId().equals(user.getId())) {
+            comment.update(request);
+        } else throw new IllegalArgumentException("댓글 작성자가 아닙니다. 댓글 수정 권한이 없습니다.");
     }
 
-    public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("존재 하지 않는 댓글입니다"));
-        commentRepository.delete(comment);
+    public void deleteComment(Long commentId, User user) {
+
+        workspaceUser(user);
+
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new NullPointerException("존재 하지 않는 댓글입니다"));
+
+        if (comment.getUser().getId().equals(user.getId())) {
+            commentRepository.delete(comment);
+        }else throw new IllegalArgumentException("댓글 작성자가 아닙니다. 댓글 삭제 권한이 없습니다.");
+    }
+
+    public void workspaceUser(User user) {
+        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
+        if (!boardUserOptional.isPresent()) {
+            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
+        }
     }
 }

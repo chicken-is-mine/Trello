@@ -1,5 +1,7 @@
 package com.sparta.trello.domain.user.controller;
 
+import com.sparta.trello.domain.user.dto.InfoRequest;
+import com.sparta.trello.domain.user.dto.InfoResponse;
 import com.sparta.trello.domain.user.dto.SignupRequest;
 import com.sparta.trello.domain.user.service.UserService;
 import com.sparta.trello.global.dto.CommonResponse;

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/boards/{boardId}/columns/{columnId}")
 public class CardController {
+
     private final CardService cardService;
 
     @PostMapping("/cards")
@@ -50,8 +51,8 @@ public class CardController {
         @PathVariable Long columnId,
         @PathVariable Long cardId
     ) {
-        List<CardDetails> cardDetails = cardService.getCardDetails(columnId,cardId);
-        return new ResponseEntity<>(cardDetails, HttpStatus.OK);
+        // List<CardDetails> cardDetails = cardService.getCardDetails(columnId,cardId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping("/cards/{cardId}")

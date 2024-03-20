@@ -33,6 +33,9 @@ public class CardService {
     public Card createCard(Long columnId, CardRequest request, User user) {
         Columns columns = findColumn(columnId);
         Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
+        if(!boardUserOptional.isPresent()) {
+            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
+        }
         return cardRepository.save(new Card(request, columns, user));
     }
 

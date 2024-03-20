@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CardRepositoryCustom {
     List<CardSummary> findCardsSummaryByColumnId(Long columnId);
+
+    List<CardDetails> findCardDetailsByColumnId(Long columnId);
 }

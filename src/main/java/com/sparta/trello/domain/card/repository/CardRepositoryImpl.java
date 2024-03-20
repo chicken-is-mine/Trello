@@ -2,10 +2,12 @@ package com.sparta.trello.domain.card.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.QCard;
 import com.sparta.trello.domain.card.entity.QWorker;
 import com.sparta.trello.domain.card.entity.Worker;
+import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.comment.entity.QComment;
 import com.sparta.trello.domain.user.entity.QUser;
 import java.util.List;
@@ -31,4 +33,30 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .fetch();
     }
 
+    @Override
+    public List<CardDetails> findCardDetailsByColumnId(Long columnId) {
+        QCard card = QCard.card;
+        QWorker worker = QWorker.worker;
+        QUser user = QUser.user;
+        QComment comment = QComment.comment;
+
+        return queryFactory
+            .select(Projections.fields(CardDetails.class,
+                card.cardId,
+                card.cardName,
+                card.description,
+                card.color,
+                card.dueDate,
+                Projections.bean(Worker.class,
+                    worker.workerId,
+                    user.username).as("workers"),
+                Projections.bean(Comment.class,
+                    comment.commentId,
+                    comment.content).as("comments")))
+            .from(card)
+            .leftJoin(worker).on(card.eq(worker.card))
+            .leftJoin(comment).on(card.eq(comment.card))
+            .where(card.column.columnId.eq(columnId))
+            .fetch();
+    }
 }

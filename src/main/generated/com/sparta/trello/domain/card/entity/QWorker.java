@@ -22,7 +22,7 @@ public class QWorker extends EntityPathBase<Worker> {
 
     public static final QWorker worker = new QWorker("worker");
 
-    public final QCard card;
+    public final NumberPath<Long> cardId = createNumber("cardId", Long.class);
 
     public final com.sparta.trello.domain.user.entity.QUser user;
 
@@ -46,7 +46,6 @@ public class QWorker extends EntityPathBase<Worker> {
 
     public QWorker(Class<? extends Worker> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.card = inits.isInitialized("card") ? new QCard(forProperty("card"), inits.get("card")) : null;
         this.user = inits.isInitialized("user") ? new com.sparta.trello.domain.user.entity.QUser(forProperty("user")) : null;
     }
 

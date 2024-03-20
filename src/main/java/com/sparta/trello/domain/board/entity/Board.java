@@ -1,9 +1,12 @@
 package com.sparta.trello.domain.board.entity;
 
+import com.sparta.trello.domain.board.dto.BoardRequest;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.entity.Timestamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +28,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "TB_BOARD")
 public class Board extends Timestamped {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;
@@ -34,8 +36,23 @@ public class Board extends Timestamped {
     @Column(nullable = false)
     private String description;
     @Column(nullable = false)
-    private Integer color;
+    @Enumerated(EnumType.ORDINAL)
+    private BoardColorEnum color;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public Board(BoardRequest boardRequest, BoardColorEnum color, User user) {
+        this.boardName = boardRequest.getBoardName();
+        this.description = boardRequest.getDescription();
+        this.color = color;
+        this.user = user;
+    }
+
+    public void update(String boardName,String description,BoardColorEnum color){
+        this.boardName=boardName;
+        this.description=description;
+        this.color=color;
+    }
+
 }

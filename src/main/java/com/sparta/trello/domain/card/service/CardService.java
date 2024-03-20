@@ -32,6 +32,7 @@ public class CardService {
     @Transactional
     public Card createCard(Long columnId, CardRequest request, User user) {
         Columns columns = findColumn(columnId);
+        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
         return cardRepository.save(new Card(request, columns, user));
     }
 
@@ -41,9 +42,9 @@ public class CardService {
     }
 
     //카드 상세 정보
-//    public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
-//        return cardRepository.findCardDetailsByColumnId(columnId, cardId);
-//    }
+    public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
+        return cardRepository.findCardDetailsByColumnId(columnId, cardId);
+    }
 
     //카드 업데이트
     @Transactional
@@ -77,7 +78,8 @@ public class CardService {
         if (updateRequest.getWorkerId() != null) {
             User worker = userRepository.findById(updateRequest.getWorkerId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
-            card.addWorker(worker);
+            Worker newWorker = new Worker(worker);
+            card.addWorker(newWorker.getUser());
             updated = true;
         }
 

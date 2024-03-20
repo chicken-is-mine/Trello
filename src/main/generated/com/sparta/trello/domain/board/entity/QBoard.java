@@ -28,7 +28,7 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final StringPath boardName = createString("boardName");
 
-    public final NumberPath<Integer> color = createNumber("color", Integer.class);
+    public final EnumPath<BoardColorEnum> color = createEnum("color", BoardColorEnum.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

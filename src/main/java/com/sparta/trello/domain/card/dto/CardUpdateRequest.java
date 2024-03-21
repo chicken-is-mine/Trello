@@ -1,6 +1,5 @@
 package com.sparta.trello.domain.card.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +15,4 @@ public class CardUpdateRequest {
     private Long workerId;
     private Long removeWorkerId;
     private LocalDateTime dueDate;
-
 }

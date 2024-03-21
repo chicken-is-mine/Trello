@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CardResponse {
     private String cardName;
     private String description;
-    private int sequence;
+    private Long sequence;
     private String color;
     private LocalDateTime dueDate;
     private LocalDateTime createAt;

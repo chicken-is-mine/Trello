@@ -23,9 +23,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -48,8 +50,8 @@ public class Card extends Timestamped {
     @Column
     private LocalDateTime dueDate;
 
-    @Column(nullable = false)
-    private int sequence;
+    @Column(nullable = false, unique = true)
+    private Long sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -59,11 +61,11 @@ public class Card extends Timestamped {
     @JoinColumn(name = "column_id", nullable = false)
     private Columns column;
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Worker> workers;
 
 
-    public Card(String cardName, String description, String color, LocalDateTime dueDate, int sequence, User user, Columns columns) {
+    public Card(String cardName, String description, String color, LocalDateTime dueDate, Long sequence, User user, Columns columns) {
         this.cardName = cardName;
         this.description = description;
         this.color = color;

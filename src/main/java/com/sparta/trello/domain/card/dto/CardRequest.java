@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CardRequest {
     private String cardName;
-    private int sequence;
+    private Long sequence;
 }

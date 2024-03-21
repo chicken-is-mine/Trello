@@ -1,7 +1,6 @@
 package com.sparta.trello.domain.card.entity;
 
 import com.sparta.trello.domain.user.entity.User;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

@@ -3,6 +3,7 @@ package com.sparta.trello.domain.card.service;
 import com.sparta.trello.domain.board.entity.BoardUser;
 import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
 import com.sparta.trello.domain.card.dto.CardDetails;
+import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.dto.CardUpdateRequest;
@@ -28,6 +29,7 @@ public class CardService {
     private final UserRepository userRepository;
     private final BoardUserJpaRepository boardUserJpaRepository;
 
+
     //카드 생성
     @Transactional
     public Card createCard(Long columnId, CardRequest request, User user) {
@@ -40,11 +42,13 @@ public class CardService {
     }
 
     //카드 요약
+    @Transactional(readOnly = true)
     public List<CardSummary> getCardSummary(Long columnId) {
         return cardRepository.findCardsSummaryByColumnId(columnId);
     }
 
     //카드 상세 정보
+    @Transactional(readOnly = true)
     public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
         return cardRepository.findCardDetailsByColumnId(columnId, cardId);
     }
@@ -116,6 +120,32 @@ public class CardService {
         cardRepository.delete(card);
     }
 
+
+    public void updatCardSequence(Long columnId, Long cardId, CardMoveRequest request) {
+        Card card = findCard(cardId);
+
+        Long between = (request.getPrevSequence() + request.getNextSequence()) / 2;
+
+        if(between.equals(request.getPrevSequence())) {
+            Card prevCard = cardRepository.findBySequence(columnId, request.getPrevSequence());
+
+            prevCard.setSequence(card.getSequence());
+        } else if(between.equals(request.getNextSequence())) {
+            Card nextCard = cardRepository.findBySequence(columnId, request.getNextSequence());
+
+            nextCard.setSequence(card.getSequence());
+        }
+
+        card.setSequence(between);
+    }
+
+    public void moveCardToColumn(Long columnId, Long cardId, Long targetColumnId) {
+        Card card = findCard(cardId);
+        Columns targetColumn = findColumn(targetColumnId);
+
+        card.setColumn(targetColumn);
+        cardRepository.save(card);
+    }
 
     private Columns findColumn(Long columnId) {
         return columnRepository.findById(columnId).orElseThrow(() -> new IllegalArgumentException("Column not found"));

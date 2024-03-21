@@ -55,8 +55,8 @@ public class CardController {
         @PathVariable Long columnId,
         @PathVariable Long cardId
     ) {
-        // List<CardDetails> cardDetails = cardService.getCardDetails(columnId,cardId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        List<CardDetails> cardDetails = cardService.getCardDetails(columnId,cardId);
+        return new ResponseEntity<>(cardDetails, HttpStatus.OK);
     }
 
     @PatchMapping("/cards/{cardId}")

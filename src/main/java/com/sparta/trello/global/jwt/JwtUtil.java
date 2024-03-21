@@ -21,12 +21,9 @@ import org.springframework.util.StringUtils;
 @Slf4j(topic = "JwtUtil")
 @Component
 public class JwtUtil {
+
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    // 사용자 권한 값의 KEY
-    public static final String AUTHORIZATION_KEY = "auth";
-    // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
-    // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
@@ -39,6 +36,7 @@ public class JwtUtil {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
+
     public String createToken(String email) {
         Date date = new Date();
 
@@ -50,6 +48,7 @@ public class JwtUtil {
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                 .compact();
     }
+
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -57,6 +56,7 @@ public class JwtUtil {
         }
         return null;
     }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -72,16 +72,10 @@ public class JwtUtil {
         }
         return false;
     }
+
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-    public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(7);
-        }
-        throw new NullPointerException("Not Found Token");
-    }
-
 
 
 }

@@ -1,6 +1,7 @@
 package com.sparta.trello.domain.comment.entity;
 
 import com.sparta.trello.domain.card.entity.Card;
+import com.sparta.trello.domain.comment.dto.CommentRequest;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.entity.Timestamped;
 import jakarta.persistence.Column;
@@ -42,9 +43,13 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
-//    public Comment(CommentCreateRequest request, User user, Card card) {
-//        this.content = request.getContent();
-//        this.user = user;
-//        this.card = card;
-//    }
+    public Comment(CommentRequest request, Card card, User user) {
+        this.content = request.getCommentContent();
+        this.user = user;
+        this.card = card;
+    }
+
+    public void update(CommentRequest requestDto) {
+        this.content = requestDto.getCommentContent();
+    }
 }

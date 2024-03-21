@@ -43,4 +43,9 @@ public class User {
         this.email = email;
         this.profile = profile;
     }
+
+    public void updateUser(String username, String profile) {
+        this.username = username;
+        this.profile = profile;
+    }
 }

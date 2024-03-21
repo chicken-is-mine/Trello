@@ -74,33 +74,27 @@ public class BoardService {
   }
 
   public void inviteUser(Long boardId, List<Long> userIds, Long userId) {
-
     Board board = boardRepository.findById(boardId)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
 
     if (!board.getUser().getId().equals(userId)) {
       throw new IllegalArgumentException("초대 권한이 없습니다.");
     }
-    List<User> users = userRepository.findAllById(userIds);
-    List<User> existingMembers = new ArrayList<>();
-    List<User> newMembers = new ArrayList<>();
-    for (User user : users) {
-      if (boardUserJpaRepository.findByBoardAndUser(board, user).isPresent()) {
-        existingMembers.add(user);
-      } else {
-        newMembers.add(user);
-      }
-    }
-    if (!existingMembers.isEmpty()) {
-      String existingUsernames = existingMembers.stream()
-          .map(User::getUsername)
-          .collect(Collectors.joining(", "));
-      throw new IllegalArgumentException("이미 초대된 사용자가 있습니다: " + existingUsernames);
-    }
 
-    List<BoardUser> boardMembers = newMembers.stream()
-        .map(user -> new BoardUser(board, user, BoardRoleEnum.MEMBER))
-        .collect(Collectors.toList());
-    boardUserJpaRepository.saveAll(boardMembers);
+    List<User> existingMembers = boardRepository.findExistingMemberByBoard(board);
+
+    List<User> users = boardRepository.findUsersByIds(userIds);
+
+    List<User> newMembers = users.stream()
+        .filter(user -> !existingMembers.contains(user))
+        .toList();
+
+    if (!newMembers.isEmpty()) {
+      boardUserJpaRepository.saveAll(newMembers.stream()
+          .map(user -> new BoardUser(board, user, BoardRoleEnum.MEMBER))
+          .collect(Collectors.toList()));
+    } else {
+      throw new IllegalArgumentException("이미 초대된 사용자가 있습니다.");
+    }
   }
 }

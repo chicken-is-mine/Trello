@@ -23,11 +23,10 @@ public class CommentService {
     private final BoardUserJpaRepository boardUserJpaRepository;
 
     @Transactional
-    public void createComment(Long id, CommentRequest request, User user) {
+    public void createComment(Long cardId, Long boardId, CommentRequest request, User user) {
+        workspaceUser(user, boardId);
 
-        workspaceUser(user);
-
-        Card card = cardRepository.findById(id)
+        Card card = cardRepository.findById(cardId)
             .orElseThrow(() -> new NullPointerException("존재 하지 않는 카드입니다"));
 
         Comment comment = new Comment(request, card, user);
@@ -35,9 +34,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(Long commentId, CommentRequest request, User user) {
+    public void updateComment(Long commentId, Long boardId, CommentRequest request, User user) {
 
-        workspaceUser(user);
+        workspaceUser(user, boardId);
         Comment comment = findComment(commentId);
 
         if (comment.getUser().getId().equals(user.getId())) {
@@ -47,10 +46,10 @@ public class CommentService {
         }
     }
 
-    @Transactional
-    public void deleteComment(Long commentId, User user) {
 
-        workspaceUser(user);
+    public void deleteComment(Long commentId, Long boardId, User user) {
+
+        workspaceUser(user, boardId);
         Comment comment = findComment(commentId);
 
         if (comment.getUser().getId().equals(user.getId())) {
@@ -60,9 +59,10 @@ public class CommentService {
         }
     }
 
-    public void workspaceUser(User user) {
-        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if (!boardUserOptional.isPresent()) {
+    public void workspaceUser(User user, Long bordId) {
+        Optional<BoardUser> board = boardUserJpaRepository.findById(bordId);
+        BoardUser boardUser = board.get();
+        if (!boardUser.getUser().getId().equals(user.getId())) {
             throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
         }
     }

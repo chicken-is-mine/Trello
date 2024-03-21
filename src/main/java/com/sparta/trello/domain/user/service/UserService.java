@@ -1,11 +1,18 @@
 package com.sparta.trello.domain.user.service;
 
+import com.sparta.trello.domain.board.dto.BoardInfo;
+import com.sparta.trello.domain.board.entity.Board;
+import com.sparta.trello.domain.board.repository.BoardRepository;
+import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
+import com.sparta.trello.domain.card.dto.CardInfo;
+import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.user.dto.InfoRequest;
 import com.sparta.trello.domain.user.dto.InfoResponse;
 import com.sparta.trello.domain.user.dto.SignupRequest;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +24,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BoardRepository boardRepository;
+    private final CardRepository cardRepository;
 
     public void signup(SignupRequest request) {
         String email = request.getEmail();
@@ -35,7 +44,10 @@ public class UserService {
         User findUser = userRepository.findById(user.getId())
             .orElseThrow(() -> new NullPointerException("존재 하지 않는 유저입니다."));
 
-        return new InfoResponse(findUser.getEmail(), findUser.getUsername(), findUser.getProfile());
+        List<BoardInfo> boardInfoList = boardRepository.findByUser_Id(user.getId());
+        List<CardInfo> cardInfoList = cardRepository.findByUser_Id(user.getId());
+
+        return new InfoResponse(findUser.getUsername(), findUser.getProfile(),boardInfoList,cardInfoList);
     }
 
     @Transactional

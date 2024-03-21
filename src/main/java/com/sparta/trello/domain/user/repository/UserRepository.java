@@ -4,7 +4,8 @@ import com.sparta.trello.domain.user.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> ,CustomUserRepository{
 
-    Optional<User> findByEmail(String email);
+
+
 }

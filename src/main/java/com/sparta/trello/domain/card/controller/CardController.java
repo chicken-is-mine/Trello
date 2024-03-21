@@ -1,6 +1,7 @@
 package com.sparta.trello.domain.card.controller;
 
 import com.sparta.trello.domain.card.dto.CardDetails;
+import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.card.dto.CardResponse;
 import com.sparta.trello.domain.card.dto.CardSummary;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,13 +32,15 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping("/cards")
-    public ResponseEntity<CardResponse> createCard(
+    public ResponseEntity<CommonResponse<CardResponse>> createCard(
         @PathVariable Long columnId,
         @RequestBody CardRequest request,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        Card card = cardService.createCard(columnId, request, userDetails.getUser());
-        return new ResponseEntity<>(new CardResponse(card), HttpStatus.CREATED);
+        cardService.createCard(columnId, request, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<CardResponse>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
     }
 
     @GetMapping("/cards")
@@ -55,24 +59,52 @@ public class CardController {
     }
 
     @PatchMapping("/cards/{cardId}")
-    public ResponseEntity<CardResponse> updateCard(
+    public ResponseEntity<CommonResponse<CardResponse>> updateCard(
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @RequestBody CardUpdateRequest updateRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        Card card = cardService.updateCard(columnId, cardId, updateRequest, userDetails.getUser());
-        return new ResponseEntity<>(new CardResponse(card), HttpStatus.NO_CONTENT);
+        cardService.updateCard(columnId, cardId, updateRequest, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<CardResponse>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+
     }
 
     @DeleteMapping("/cards/{cardId}")
-    public ResponseEntity<String> deleteCard(
+    public ResponseEntity<CommonResponse<String>> deleteCard(
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         cardService.deleteCard(columnId, cardId, userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<String>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
     }
 
+    @PatchMapping("/cards/{cardId}/sequence")
+    public ResponseEntity<CommonResponse<Void>> updatCardSequence(
+        @PathVariable Long columnId,
+        @PathVariable Long cardId,
+        @RequestBody CardMoveRequest request
+    ) {
+        cardService.updatCardSequence(columnId, cardId, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<Void>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+    }
+
+    @PatchMapping("/cards/{cardId}/move")
+    public ResponseEntity<CommonResponse<String>> moveCardToColumn(
+        @PathVariable Long columnId,
+        @PathVariable Long cardId,
+        @RequestParam Long targetColumnId
+    ) {
+        cardService.moveCardToColumn(columnId, cardId, targetColumnId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+            CommonResponse.<String>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+    }
 }

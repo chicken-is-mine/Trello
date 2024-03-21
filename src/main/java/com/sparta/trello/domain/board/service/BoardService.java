@@ -15,7 +15,6 @@ import com.sparta.trello.domain.column.dto.GetColumnResponse;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -73,11 +72,9 @@ public class BoardService {
       throw new IllegalArgumentException("삭제 권한이 없습니다.");
     }
 
-    // 관련된 BoardUser 엔티티 삭제
     List<BoardUser> boardUsers = boardUserJpaRepository.findByBoard(board);
     boardUserJpaRepository.deleteAll(boardUsers);
 
-    // Board 엔티티 삭제
     boardRepository.delete(board);
   }
 
@@ -106,13 +103,16 @@ public class BoardService {
     }
   }
 
+  @Transactional(readOnly = true)
   public GetBoardResponse getBoardList(Long boardId, User user) {
     Board board = boardRepository.findById(boardId)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
 
-//    if (!board.getUser().equals(user)) {
-//      throw new IllegalArgumentException("권한이 없습니다.");
-//    }
+    BoardUser boardUser = boardUserJpaRepository.findByBoardAndUser(board, user);
+    if (boardUser == null || !boardUser.getBoardRole().equals(BoardRoleEnum.OWNER) &&
+        !boardUser.getBoardRole().equals(BoardRoleEnum.MEMBER)) {
+      throw new IllegalArgumentException("권한이 없습니다.");
+    }
 
     List<GetColumnResponse> columns = columnRepository.findAllByBoardIdOrderBySequence(boardId)
         .stream()
@@ -121,7 +121,7 @@ public class BoardService {
         .collect(Collectors.toList());
 
     List<CardResponse> cards = cardRepository.findAllByBoardId(boardId).stream()
-        .map(card -> new CardResponse(card))
+        .map(CardResponse::new)
         .collect(Collectors.toList());
 
     return new GetBoardResponse(board.getBoardId(), board.getBoardName(), board.getDescription(),

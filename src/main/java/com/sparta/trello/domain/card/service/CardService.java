@@ -1,7 +1,5 @@
 package com.sparta.trello.domain.card.service;
 
-import com.sparta.trello.domain.board.entity.BoardUser;
-import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
 import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
@@ -16,7 +14,6 @@ import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +25,6 @@ public class CardService {
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
     private final UserRepository userRepository;
-    private final BoardUserJpaRepository boardUserJpaRepository;
-
 
     //카드 생성
     @Transactional

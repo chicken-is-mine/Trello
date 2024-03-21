@@ -1,5 +1,6 @@
 package com.sparta.trello.domain.card.repository;
 
+import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardInfo;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.Card;

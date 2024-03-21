@@ -6,19 +6,12 @@ import static com.sparta.trello.domain.comment.entity.QComment.comment;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.trello.domain.card.dto.CardInfo;
-import com.querydsl.jpa.JPQLQueryFactory;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.trello.domain.card.dto.CardDetails;
+import com.sparta.trello.domain.card.dto.CardInfo;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.Card;
-import com.sparta.trello.domain.card.entity.QWorker;
 import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.comment.entity.Comment;
-import com.sparta.trello.domain.comment.entity.QComment;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class CardRepositoryImpl implements CardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
 
 
     @Override
@@ -50,7 +42,6 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
 
     @Override
     public List<CardInfo> findByUser_Id(Long userId) {
-        QCard card = QCard.card;
         return queryFactory
             .select(Projections.constructor(CardInfo.class, card.cardId, card.cardName))
             .from(card)
@@ -81,7 +72,6 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 .and(card.cardId.eq(cardId)))
             .fetch();
     }
-
 
 
     @Override

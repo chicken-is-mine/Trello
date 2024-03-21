@@ -14,4 +14,6 @@ public interface CardRepositoryCustom {
     Card findBySequence(Long columnId, Long prevSequence);
 
     List<CardInfo> findByUser_Id(Long userId);
+
+    List<Card> findAllByBoardId(Long boardId);
 }

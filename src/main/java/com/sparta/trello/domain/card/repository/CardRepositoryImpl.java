@@ -199,4 +199,13 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .where(card.sequence.eq(sequence), card.column.columnId.eq(columnId))
             .fetchFirst();
     }
+
+    @Override
+    public List<Card> findAllByBoardId(Long boardId) {
+        return queryFactory
+            .selectFrom(card)
+            .join(card.column)
+            .where(card.column.board.boardId.eq(boardId))
+            .fetch();
+    }
 }

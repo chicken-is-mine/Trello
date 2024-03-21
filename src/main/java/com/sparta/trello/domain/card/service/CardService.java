@@ -35,10 +35,7 @@ public class CardService {
     @Transactional
     public Card createCard(Long columnId, CardRequest request, User user) {
         Columns columns = findColumn(columnId);
-        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if (!boardUserOptional.isPresent()) {
-            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
-        }
+
         return cardRepository.save(new Card(request, columns, user));
     }
 
@@ -59,10 +56,6 @@ public class CardService {
     public Card updateCard(Long columnId, Long cardId, CardUpdateRequest updateRequest, User user) {
         findColumn(columnId);
         Card card = findCard(cardId);
-        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if (!boardUserOptional.isPresent()) {
-            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
-        }
 
         boolean updated = false;
         if (updateRequest.getCardName() != null && !updateRequest.getCardName()
@@ -117,11 +110,9 @@ public class CardService {
     @Transactional
     public void deleteCard(Long columnId, Long cardId, User user) {
         findColumn(columnId);
-        Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if (!boardUserOptional.isPresent()) {
-            throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
-        }
+
         Card card = findCard(cardId);
+
         cardRepository.delete(card);
     }
 
@@ -161,6 +152,4 @@ public class CardService {
         return cardRepository.findById(cardId)
             .orElseThrow(() -> new IllegalArgumentException("Card not found"));
     }
-
-
 }

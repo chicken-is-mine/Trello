@@ -2,6 +2,7 @@ package com.sparta.trello.domain.column.entity;
 
 import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
+import com.sparta.trello.global.entity.Timestamped;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,7 +27,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_COLUMN")
-public class Columns {
+public class Columns extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package com.sparta.trello.domain.card.dto;
 
+import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.user.entity.User;

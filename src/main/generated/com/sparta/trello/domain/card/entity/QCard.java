@@ -42,7 +42,7 @@ public class QCard extends EntityPathBase<Card> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final NumberPath<Integer> sequence = createNumber("sequence", Integer.class);
+    public final NumberPath<Long> sequence = createNumber("sequence", Long.class);
 
     public final com.sparta.trello.domain.user.entity.QUser user;
 

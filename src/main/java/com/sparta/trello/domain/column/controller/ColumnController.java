@@ -1,7 +1,7 @@
 package com.sparta.trello.domain.column.controller;
 
+import com.sparta.trello.domain.column.dto.ColumnResponse;
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
-import com.sparta.trello.domain.column.dto.GetColumnResponse;
 import com.sparta.trello.domain.column.dto.ModifyColumnNameRequest;
 import com.sparta.trello.domain.column.dto.ModifyColumnSequenceRequest;
 import com.sparta.trello.domain.column.service.ColumnService;
@@ -29,28 +29,28 @@ public class ColumnController {
     private final ColumnService columnService;
 
     @PostMapping("/boards/{boardId}/columns")
-    public ResponseEntity<CommonResponse<Void>> createColumn(
+    public ResponseEntity<CommonResponse<ColumnResponse>> createColumn(
         @PathVariable Long boardId,
         @RequestBody CreateColumnRequest request
     ) {
-        columnService.createColumn(boardId, request);
+        ColumnResponse response = columnService.createColumn(boardId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
-            CommonResponse.<Void>builder()
-                .httpCode(HttpStatus.CREATED.value()).build());
+            CommonResponse.<ColumnResponse>builder()
+                .httpCode(HttpStatus.CREATED.value()).data(response).build());
     }
 
     @PatchMapping("/boards/{boardId}/columns/{columnId}")
-    public ResponseEntity<CommonResponse<Void>> modifyColumnName(
+    public ResponseEntity<CommonResponse<ColumnResponse>> modifyColumnName(
         @PathVariable Long boardId,
         @PathVariable Long columnId,
         @RequestBody ModifyColumnNameRequest request
     ) {
-        columnService.modifyColumnName(columnId, request);
+        ColumnResponse response = columnService.modifyColumnName(columnId, request);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
-            CommonResponse.<Void>builder()
-                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+            CommonResponse.<ColumnResponse>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).data(response).build());
     }
 
     @DeleteMapping("/boards/{boardId}/columns/{columnId}")
@@ -66,26 +66,26 @@ public class ColumnController {
     }
 
     @PatchMapping("/boards/{boardId}/columns/{columnId}/sequence")
-    public ResponseEntity<CommonResponse<Void>> modifyColumnSequence(
+    public ResponseEntity<CommonResponse<ColumnResponse>> modifyColumnSequence(
         @PathVariable Long boardId,
         @PathVariable Long columnId,
         @RequestBody ModifyColumnSequenceRequest request
     ) {
-        columnService.modifyColumnSequence(boardId, columnId, request);
+        ColumnResponse response = columnService.modifyColumnSequence(boardId, columnId, request);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
-            CommonResponse.<Void>builder()
-                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+            CommonResponse.<ColumnResponse>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).data(response).build());
     }
 
     @GetMapping("/boards/{boardId}/columns")
-    public ResponseEntity<CommonResponse<List<GetColumnResponse>>> getColumnsOrderBySequence(
+    public ResponseEntity<CommonResponse<List<ColumnResponse>>> getColumnsOrderBySequence(
         @PathVariable Long boardId
     ) {
-        List<GetColumnResponse> responseList = columnService.getColumnsOrderBySequence(boardId);
+        List<ColumnResponse> responseList = columnService.getColumnsOrderBySequence(boardId);
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(
-            CommonResponse.<List<GetColumnResponse>>builder()
+            CommonResponse.<List<ColumnResponse>>builder()
                 .httpCode(HttpStatus.OK.value()).data(responseList).build());
     }
 }

@@ -6,7 +6,6 @@ import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.card.dto.CardResponse;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.dto.CardUpdateRequest;
-import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.service.CardService;
 import com.sparta.trello.global.dto.CommonResponse;
 import com.sparta.trello.global.security.UserDetailsImpl;
@@ -55,7 +54,7 @@ public class CardController {
         @PathVariable Long columnId,
         @PathVariable Long cardId
     ) {
-        List<CardDetails> cardDetails = cardService.getCardDetails(columnId,cardId);
+        List<CardDetails> cardDetails = cardService.getCardDetails(columnId, cardId);
         return new ResponseEntity<>(cardDetails, HttpStatus.OK);
     }
 

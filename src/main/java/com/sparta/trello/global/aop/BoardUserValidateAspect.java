@@ -42,7 +42,7 @@ public class BoardUserValidateAspect {
     }
 
     @Before("boardTransaction() || cardTransaction() || columnTransaction() || commentTransaction()")
-    private void validateBoardUser(JoinPoint joinPoint) {
+    public void validateBoardUser(JoinPoint joinPoint) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
 

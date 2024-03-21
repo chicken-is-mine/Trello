@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetColumnResponse {
+public class ColumnResponse {
 
     private Long columnId;
 
@@ -18,7 +18,7 @@ public class GetColumnResponse {
 
     private Long sequence;
 
-    public GetColumnResponse(Columns columns) {
+    public ColumnResponse(Columns columns) {
         this.columnId = columns.getColumnId();
         this.columnName = columns.getColumnName();
         this.sequence = columns.getSequence();

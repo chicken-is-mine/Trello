@@ -2,12 +2,17 @@ package com.sparta.trello.domain.board.service;
 
 import com.sparta.trello.domain.board.dto.BoardRequest;
 import com.sparta.trello.domain.board.dto.BoardResponse;
+import com.sparta.trello.domain.board.dto.GetBoardResponse;
 import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.entity.BoardColorEnum;
 import com.sparta.trello.domain.board.entity.BoardRoleEnum;
 import com.sparta.trello.domain.board.entity.BoardUser;
 import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
+import com.sparta.trello.domain.card.dto.CardResponse;
+import com.sparta.trello.domain.card.repository.CardRepository;
+import com.sparta.trello.domain.column.dto.GetColumnResponse;
+import com.sparta.trello.domain.column.repository.ColumnRepository;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
 import java.util.ArrayList;
@@ -21,9 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class BoardService {
+
   private final BoardRepository boardRepository;
   private final UserRepository userRepository;
   private final BoardUserJpaRepository boardUserJpaRepository;
+  private final ColumnRepository columnRepository;
+  private final CardRepository cardRepository;
 
   public BoardResponse createBoard(BoardRequest boardRequest, User user) {
     BoardColorEnum color = BoardColorEnum.fromValue(boardRequest.getColor());
@@ -96,5 +104,27 @@ public class BoardService {
     } else {
       throw new IllegalArgumentException("이미 초대된 사용자가 있습니다.");
     }
+  }
+
+  public GetBoardResponse getBoardList(Long boardId, User user) {
+    Board board = boardRepository.findById(boardId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
+
+//    if (!board.getUser().equals(user)) {
+//      throw new IllegalArgumentException("권한이 없습니다.");
+//    }
+
+    List<GetColumnResponse> columns = columnRepository.findAllByBoardIdOrderBySequence(boardId)
+        .stream()
+        .map(column -> new GetColumnResponse(column.getColumnId(), column.getColumnName(),
+            column.getSequence()))
+        .collect(Collectors.toList());
+
+    List<CardResponse> cards = cardRepository.findAllByBoardId(boardId).stream()
+        .map(card -> new CardResponse(card))
+        .collect(Collectors.toList());
+
+    return new GetBoardResponse(board.getBoardId(), board.getBoardName(), board.getDescription(),
+        board.getColor(), columns, cards);
   }
 }

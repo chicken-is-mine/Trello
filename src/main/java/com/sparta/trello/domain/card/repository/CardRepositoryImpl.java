@@ -83,6 +83,15 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             .fetchFirst();
     }
 
+    @Override
+    public List<Card> findAllByBoardId(Long boardId) {
+        return queryFactory
+            .selectFrom(card)
+            .join(card.column)
+            .where(card.column.board.boardId.eq(boardId))
+            .fetch();
+    }
+
     private List<Worker> workerList() {
         return queryFactory
             .selectFrom(worker)

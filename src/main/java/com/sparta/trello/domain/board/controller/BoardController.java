@@ -2,6 +2,7 @@ package com.sparta.trello.domain.board.controller;
 
 import com.sparta.trello.domain.board.dto.BoardRequest;
 import com.sparta.trello.domain.board.dto.BoardResponse;
+import com.sparta.trello.domain.board.dto.GetBoardResponse;
 import com.sparta.trello.domain.board.dto.InviteUserRequest;
 import com.sparta.trello.domain.board.service.BoardService;
 import com.sparta.trello.global.dto.CommonResponse;
@@ -85,16 +86,16 @@ public class BoardController {
     );
   }
 
-//  @GetMapping("/{boardId}")
-//  public ResponseEntity<CommonResponse<BoardResponse>> getBoardList(@PathVariable Long boardId,
-//      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//    BoardResponse boardResponse = boardService.getBoardList(boardId, userDetails.getUser());
-//    return ResponseEntity.ok(
-//        CommonResponse.<BoardResponse>builder()
-//            .httpCode(HttpStatus.OK.value())
-//            .data(boardResponse)
-//            .build()
-//    );
-//  }
+  @GetMapping("/{boardId}")
+  public ResponseEntity<CommonResponse<GetBoardResponse>> getBoardList(@PathVariable Long boardId,
+      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    GetBoardResponse boardResponse = boardService.getBoardList(boardId, userDetails.getUser());
+    return ResponseEntity.ok(
+        CommonResponse.<GetBoardResponse>builder()
+            .httpCode(HttpStatus.OK.value())
+            .data(boardResponse)
+            .build()
+    );
+  }
 
 }

@@ -14,5 +14,5 @@ public interface CustomBoardRepository {
 
   List<User> findUsersByIds(List<Long> userIds);
 
-
+  List<BoardInfo> findByUser_Id(Long userId);
 }

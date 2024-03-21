@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CommonResponse <T>{
+public class CommonResponse<T> {
+
     int httpCode;
     T data;
 }

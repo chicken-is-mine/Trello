@@ -5,9 +5,11 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Email;
+
 @Getter
 @Setter
 public class SignupRequest {
+
     @Email
     @NotBlank
     private String email;

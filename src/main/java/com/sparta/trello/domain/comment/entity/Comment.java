@@ -43,7 +43,7 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "card_id", nullable = false)
     private Card card;
 
-    public Comment(CommentRequest request,Card card,User user) {
+    public Comment(CommentRequest request, Card card, User user) {
         this.content = request.getCommentContent();
         this.user = user;
         this.card = card;

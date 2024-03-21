@@ -1,10 +1,7 @@
 package com.sparta.trello.domain.card.repository;
 
-import static com.sparta.trello.domain.board.entity.QBoard.board;
-
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sparta.trello.domain.board.dto.BoardInfo;
 import com.sparta.trello.domain.card.dto.CardInfo;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.QCard;
@@ -17,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CardRepositoryImpl implements CardRepositoryCustom {
+
     private final QueryDslConfig queryDslConfig;
     private final JPAQueryFactory queryFactory;
+
     @Override
     public List<CardSummary> findCardsSummaryByColumnId(Long columnId) {
         QCard card = QCard.card;
@@ -44,7 +43,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
     public List<CardInfo> findByUser_Id(Long userId) {
         QCard card = QCard.card;
         return queryFactory
-            .select(Projections.constructor(CardInfo.class,card.cardId, card.cardName))
+            .select(Projections.constructor(CardInfo.class, card.cardId, card.cardName))
             .from(card)
             .where(card.user.id.eq(userId))
             .fetch();

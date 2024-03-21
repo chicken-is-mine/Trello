@@ -1,9 +1,7 @@
 package com.sparta.trello.domain.user.service;
 
 import com.sparta.trello.domain.board.dto.BoardInfo;
-import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.repository.BoardRepository;
-import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
 import com.sparta.trello.domain.card.dto.CardInfo;
 import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.user.dto.InfoRequest;
@@ -47,7 +45,8 @@ public class UserService {
         List<BoardInfo> boardInfoList = boardRepository.findByUser_Id(user.getId());
         List<CardInfo> cardInfoList = cardRepository.findByUser_Id(user.getId());
 
-        return new InfoResponse(findUser.getUsername(), findUser.getProfile(),boardInfoList,cardInfoList);
+        return new InfoResponse(findUser.getUsername(), findUser.getProfile(), boardInfoList,
+            cardInfoList);
     }
 
     @Transactional

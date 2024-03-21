@@ -10,10 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class UserRepositoryImpl implements CustomUserRepository{
+public class UserRepositoryImpl implements CustomUserRepository {
 
     private final JPAQueryFactory queryFactory;
-
 
     @Override
     public Optional<User> findByEmail(String email) {

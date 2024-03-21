@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 @Tag(name = "Comment API", description = "댓글 API")
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
 
     private final CommentService commentService;
+
     @Operation(summary = "댓글 생성", description = "입력된 boardId와 CardId에 댓글을 생성합니다.")
     @PostMapping()
     public ResponseEntity<CommonResponse> createComment(@PathVariable Long cardId,
@@ -41,9 +43,11 @@ public class CommentController {
                 .build());
 
     }
+
     @Operation(summary = "댓글 수정", description = "작성자와 일치하면 commentId 기준으로 댓글을 수정합니다.")
     @PatchMapping("/{commentId}")
-    public ResponseEntity<CommonResponse> updateComment(@PathVariable Long commentId, @PathVariable Long boardId,
+    public ResponseEntity<CommonResponse> updateComment(@PathVariable Long commentId,
+        @PathVariable Long boardId,
         @RequestBody CommentRequest request,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentService.updateComment(commentId, boardId, request, userDetails.getUser());
@@ -54,9 +58,11 @@ public class CommentController {
                 .data("댓글이 수정되었습니다")
                 .build());
     }
+
     @Operation(summary = "댓글 삭제", description = "작성자와 일치하면 commentId 기준으로 댓글을 삭제합니다.")
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<CommonResponse> deleteComment(@PathVariable Long commentId, @PathVariable Long boardId,
+    public ResponseEntity<CommonResponse> deleteComment(@PathVariable Long commentId,
+        @PathVariable Long boardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentService.deleteComment(commentId, boardId, userDetails.getUser());
 

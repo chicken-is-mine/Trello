@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class CommentRepositoryImpl implements CustomCommentRepository{
+public class CommentRepositoryImpl implements CustomCommentRepository {
 
 }

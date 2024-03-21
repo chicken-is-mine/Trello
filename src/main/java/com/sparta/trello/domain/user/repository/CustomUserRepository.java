@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CustomUserRepository  {
+public interface CustomUserRepository {
+
     Optional<User> findByEmail(String email);
 }

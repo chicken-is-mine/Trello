@@ -44,7 +44,7 @@ public class User {
         this.profile = profile;
     }
 
-    public void updateUser(String username, String profile){
+    public void updateUser(String username, String profile) {
         this.username = username;
         this.profile = profile;
     }

@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 @Slf4j(topic = "JwtUtil")
 @Component
 public class JwtUtil {
+
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
@@ -35,6 +36,7 @@ public class JwtUtil {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
+
     public String createToken(String email) {
         Date date = new Date();
 
@@ -46,6 +48,7 @@ public class JwtUtil {
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                 .compact();
     }
+
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
@@ -53,6 +56,7 @@ public class JwtUtil {
         }
         return null;
     }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -68,11 +72,10 @@ public class JwtUtil {
         }
         return false;
     }
+
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-
-
 
 
 }

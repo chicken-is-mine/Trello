@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CardService {
+
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
     private final UserRepository userRepository;
@@ -35,7 +36,7 @@ public class CardService {
     public Card createCard(Long columnId, CardRequest request, User user) {
         Columns columns = findColumn(columnId);
         Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if(!boardUserOptional.isPresent()) {
+        if (!boardUserOptional.isPresent()) {
             throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
         }
         return cardRepository.save(new Card(request, columns, user));
@@ -59,16 +60,18 @@ public class CardService {
         findColumn(columnId);
         Card card = findCard(cardId);
         Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if(!boardUserOptional.isPresent()) {
+        if (!boardUserOptional.isPresent()) {
             throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
         }
 
         boolean updated = false;
-        if (updateRequest.getCardName() != null && !updateRequest.getCardName().equals(card.getCardName())) {
+        if (updateRequest.getCardName() != null && !updateRequest.getCardName()
+            .equals(card.getCardName())) {
             card.updateCardName(updateRequest.getCardName());
             updated = true;
         }
-        if (updateRequest.getDescription() != null && !updateRequest.getDescription().equals(card.getDescription())) {
+        if (updateRequest.getDescription() != null && !updateRequest.getDescription()
+            .equals(card.getDescription())) {
             card.updateDescription(updateRequest.getDescription());
             updated = true;
         }
@@ -76,7 +79,8 @@ public class CardService {
             card.updateColor(updateRequest.getColor());
             updated = true;
         }
-        if (updateRequest.getDueDate() != null && !updateRequest.getDueDate().equals(card.getDueDate())) {
+        if (updateRequest.getDueDate() != null && !updateRequest.getDueDate()
+            .equals(card.getDueDate())) {
             card.updateDueDate(updateRequest.getDueDate());
             updated = true;
         }
@@ -93,7 +97,8 @@ public class CardService {
         // 작업자 제거
         if (updateRequest.getRemoveWorkerId() != null) {
             Worker removeWorker = card.getWorkers().stream()
-                .filter(worker -> worker.getUser().getId().equals(updateRequest.getRemoveWorkerId()))
+                .filter(
+                    worker -> worker.getUser().getId().equals(updateRequest.getRemoveWorkerId()))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
             card.removeWorker(removeWorker);
@@ -113,7 +118,7 @@ public class CardService {
     public void deleteCard(Long columnId, Long cardId, User user) {
         findColumn(columnId);
         Optional<BoardUser> boardUserOptional = boardUserJpaRepository.findById(user.getId());
-        if(!boardUserOptional.isPresent()) {
+        if (!boardUserOptional.isPresent()) {
             throw new NoSuchElementException("워크스페이스 권한이 없는 사용자입니다.");
         }
         Card card = findCard(cardId);
@@ -126,11 +131,11 @@ public class CardService {
 
         Long between = (request.getPrevSequence() + request.getNextSequence()) / 2;
 
-        if(between.equals(request.getPrevSequence())) {
+        if (between.equals(request.getPrevSequence())) {
             Card prevCard = cardRepository.findBySequence(columnId, request.getPrevSequence());
 
             prevCard.setSequence(card.getSequence());
-        } else if(between.equals(request.getNextSequence())) {
+        } else if (between.equals(request.getNextSequence())) {
             Card nextCard = cardRepository.findBySequence(columnId, request.getNextSequence());
 
             nextCard.setSequence(card.getSequence());
@@ -148,10 +153,14 @@ public class CardService {
     }
 
     private Columns findColumn(Long columnId) {
-        return columnRepository.findById(columnId).orElseThrow(() -> new IllegalArgumentException("Column not found"));
+        return columnRepository.findById(columnId)
+            .orElseThrow(() -> new IllegalArgumentException("Column not found"));
     }
 
     private Card findCard(Long cardId) {
-        return cardRepository.findById(cardId).orElseThrow(() -> new IllegalArgumentException("Card not found"));
+        return cardRepository.findById(cardId)
+            .orElseThrow(() -> new IllegalArgumentException("Card not found"));
     }
+
+
 }

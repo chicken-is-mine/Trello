@@ -1,9 +1,6 @@
 package com.sparta.trello.domain.card.dto;
 
-import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
-import com.sparta.trello.domain.comment.entity.Comment;
-import com.sparta.trello.domain.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -22,5 +19,4 @@ public class CardDetails {
     private String color;
     private LocalDateTime dueDate;
     private List<Worker> workers;
-    private List<Comment> comments;
 }

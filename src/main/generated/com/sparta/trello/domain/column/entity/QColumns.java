@@ -22,13 +22,23 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public static final QColumns columns = new QColumns("columns");
 
+    public final com.sparta.trello.global.entity.QTimestamped _super = new com.sparta.trello.global.entity.QTimestamped(this);
+
     public final com.sparta.trello.domain.board.entity.QBoard board;
 
     public final NumberPath<Long> columnId = createNumber("columnId", Long.class);
 
     public final StringPath columnName = createString("columnName");
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+
     public final NumberPath<Long> sequence = createNumber("sequence", Long.class);
+
+    public final NumberPath<Integer> version = createNumber("version", Integer.class);
 
     public QColumns(String variable) {
         this(Columns.class, forVariable(variable), INITS);

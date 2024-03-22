@@ -39,7 +39,7 @@ public class BoardService {
         Board board = new Board(boardRequest, color, user);
         Board savedBoard = boardRepository.save(board);
 
-        BoardUser ownerBoardUser = new BoardUser(savedBoard, user, BoardRoleEnum.OWNER);
+        BoardUser ownerBoardUser = new BoardUser(savedBoard, user,BoardRoleEnum.OWNER);
         boardUserJpaRepository.save(ownerBoardUser);
 
         return new BoardResponse(savedBoard);

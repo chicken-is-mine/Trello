@@ -42,7 +42,7 @@ public class CardController {
         @RequestBody CardRequest request,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        cardService.createCard(boardId, columnId, request, userDetails.getUser());
+        cardService.createCard(columnId, request, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<CardResponse>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -53,7 +53,7 @@ public class CardController {
     public ResponseEntity<List<CardSummary>> getCardSummary(
         @PathVariable Long boardId,
         @PathVariable Long columnId) {
-        List<CardSummary> cardSummaries = cardService.getCardSummary(boardId, columnId);
+        List<CardSummary> cardSummaries = cardService.getCardSummary(columnId);
         return new ResponseEntity<>(cardSummaries, HttpStatus.OK);
     }
 
@@ -64,7 +64,7 @@ public class CardController {
         @PathVariable Long columnId,
         @PathVariable Long cardId
     ) {
-        List<CardDetails> cardDetails = cardService.getCardDetails(boardId, columnId, cardId);
+        List<CardDetails> cardDetails = cardService.getCardDetails(columnId, cardId);
         return new ResponseEntity<>(cardDetails, HttpStatus.OK);
     }
 
@@ -77,7 +77,7 @@ public class CardController {
         @RequestBody CardUpdateRequest updateRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        cardService.updateCard(boardId, columnId, cardId, updateRequest, userDetails.getUser());
+        cardService.updateCard(columnId, cardId, updateRequest, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<CardResponse>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -92,7 +92,7 @@ public class CardController {
         @PathVariable Long cardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        cardService.deleteCard(boardId, columnId, cardId, userDetails.getUser());
+        cardService.deleteCard(columnId, cardId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<String>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -106,7 +106,7 @@ public class CardController {
         @PathVariable Long cardId,
         @RequestBody CardMoveRequest request
     ) {
-        cardService.updatCardSequence(boardId, columnId, cardId, request);
+        cardService.updatCardSequence(columnId, cardId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<Void>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -120,7 +120,7 @@ public class CardController {
         @PathVariable Long cardId,
         @RequestParam Long targetColumnId
     ) {
-        cardService.moveCardToColumn(boardId, columnId, cardId, targetColumnId);
+        cardService.moveCardToColumn(columnId, cardId, targetColumnId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<String>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());

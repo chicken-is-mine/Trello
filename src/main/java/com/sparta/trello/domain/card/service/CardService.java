@@ -35,8 +35,7 @@ public class CardService {
 
     //카드 생성
     @Transactional
-    public Card createCard(Long boardId, Long columnId, CardRequest request, User user) {
-        Board board = findBoard(boardId);
+    public Card createCard(Long columnId, CardRequest request, User user) {
         Columns columns = findColumn(columnId);
 
         return cardRepository.save(new Card(request, columns, user));
@@ -44,14 +43,13 @@ public class CardService {
 
     //카드 요약
     @Transactional(readOnly = true)
-    public List<CardSummary> getCardSummary(Long boardId, Long columnId) {
-        findBoard(boardId);
+    public List<CardSummary> getCardSummary(Long columnId) {
         return cardRepository.findCardsSummaryByColumnId(columnId);
     }
 
     //카드 상세 정보
     @Transactional(readOnly = true)
-    public List<CardDetails> getCardDetails(Long boardId, Long columnId, Long cardId) {
+    public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
         List<CardDetails> cardDetailsList = cardRepository.findCardDetailsByColumnId(columnId,
             cardId);
         List<CardDetails> cardDetailsWithCommentsList = new ArrayList<>();
@@ -65,7 +63,7 @@ public class CardService {
 
     //카드 업데이트
     @Transactional
-    public Card updateCard(Long boardId, Long columnId, Long cardId,
+    public Card updateCard(Long columnId, Long cardId,
         CardUpdateRequest updateRequest, User user) {
         findColumn(columnId);
         Card card = findCard(cardId);
@@ -121,7 +119,7 @@ public class CardService {
 
     //카드 삭제
     @Transactional
-    public void deleteCard(Long boardId, Long columnId, Long cardId, User user) {
+    public void deleteCard(Long columnId, Long cardId, User user) {
         findColumn(columnId);
 
         Card card = findCard(cardId);
@@ -130,7 +128,7 @@ public class CardService {
     }
 
 
-    public void updatCardSequence(Long boardId, Long columnId, Long cardId,
+    public void updatCardSequence(Long columnId, Long cardId,
         CardMoveRequest request) {
         Card card = findCard(cardId);
 
@@ -149,7 +147,7 @@ public class CardService {
         card.setSequence(between);
     }
 
-    public void moveCardToColumn(Long boardId, Long columnId, Long cardId, Long targetColumnId) {
+    public void moveCardToColumn(Long columnId, Long cardId, Long targetColumnId) {
         Card card = findCard(cardId);
         Columns targetColumn = findColumn(targetColumnId);
 

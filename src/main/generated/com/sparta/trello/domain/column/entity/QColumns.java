@@ -22,8 +22,7 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public static final QColumns columns = new QColumns("columns");
 
-    public final com.sparta.trello.global.entity.QTimestamped _super = new com.sparta.trello.global.entity.QTimestamped(
-        this);
+    public final com.sparta.trello.global.entity.QTimestamped _super = new com.sparta.trello.global.entity.QTimestamped(this);
 
     public final com.sparta.trello.domain.board.entity.QBoard board;
 

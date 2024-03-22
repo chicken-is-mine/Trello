@@ -12,6 +12,7 @@ import com.sparta.trello.domain.card.dto.CardInfo;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class CardRepositoryImpl implements CardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager entityManager;
 
 
     @Override
@@ -96,13 +98,13 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
 
         Map<Long, CardDetails> cardDetailsMap = new LinkedHashMap<>();
 
-        for (Tuple tuple : results) {
+        results.forEach(tuple -> {
             Card cardEntity = tuple.get(0, Card.class);
             String workerUsername = tuple.get(1, String.class);
 
             Long cardId1 = cardEntity.getCardId();
 
-            CardDetails cardDetails = cardDetailsMap.computeIfAbsent(cardId1, id ->
+            cardDetailsMap.computeIfAbsent(cardId1, id ->
                 new CardDetails(
                     cardEntity.getCardId(),
                     cardEntity.getCardName(),
@@ -114,8 +116,27 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                 ));
 
             if (workerUsername != null) {
-                Worker worker = new Worker(workerUsername);
-                cardDetails.getWorkers().add(worker);
+                cardDetailsMap.get(cardId1).getWorkers().add(new Worker(workerUsername));
+            }
+        });
+
+        // If cardDetailsMap doesn't contain the requested cardId, retrieve data from the database
+        if (!cardDetailsMap.containsKey(cardId)) {
+            // Fetch card details directly from the database
+            Card cardEntity = entityManager.find(Card.class, cardId);
+
+            if (cardEntity != null) {
+                CardDetails cardDetails = new CardDetails(
+                    cardEntity.getCardId(),
+                    cardEntity.getCardName(),
+                    cardEntity.getDescription(),
+                    cardEntity.getColor(),
+                    cardEntity.getDueDate(),
+                    new ArrayList<>(),
+                    new ArrayList<>()
+                );
+
+                cardDetailsMap.put(cardId, cardDetails);
             }
         }
 

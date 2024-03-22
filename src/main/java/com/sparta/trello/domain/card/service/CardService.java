@@ -10,6 +10,7 @@ import com.sparta.trello.domain.card.dto.CardUpdateRequest;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.card.repository.CardRepository;
+import com.sparta.trello.domain.card.repository.WorkerRepository;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
 import com.sparta.trello.domain.comment.dto.CommentResponse;
@@ -19,6 +20,7 @@ import com.sparta.trello.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ public class CardService {
     private final ColumnRepository columnRepository;
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+    private final WorkerRepository workerRepository;
     private final CommentService commentService;
 
     //카드 생성
@@ -68,53 +71,47 @@ public class CardService {
         findColumn(columnId);
         Card card = findCard(cardId);
 
-        boolean updated = false;
-        if (updateRequest.getCardName() != null && !updateRequest.getCardName()
-            .equals(card.getCardName())) {
+        if (updateRequest.getCardName() != null) {
             card.updateCardName(updateRequest.getCardName());
-            updated = true;
         }
-        if (updateRequest.getDescription() != null && !updateRequest.getDescription()
-            .equals(card.getDescription())) {
+        if (updateRequest.getDescription() != null) {
             card.updateDescription(updateRequest.getDescription());
-            updated = true;
         }
-        if (updateRequest.getColor() != null && !updateRequest.getColor().equals(card.getColor())) {
+        if (updateRequest.getColor() != null) {
             card.updateColor(updateRequest.getColor());
-            updated = true;
         }
-        if (updateRequest.getDueDate() != null && !updateRequest.getDueDate()
-            .equals(card.getDueDate())) {
+        if (updateRequest.getDueDate() != null) {
             card.updateDueDate(updateRequest.getDueDate());
-            updated = true;
         }
 
-        // 작업자 추가
         if (updateRequest.getWorkerId() != null) {
             User worker = userRepository.findById(updateRequest.getWorkerId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
             Worker newWorker = new Worker(worker);
             card.addWorker(newWorker.getUser());
-            updated = true;
         }
 
         // 작업자 제거
         if (updateRequest.getRemoveWorkerId() != null) {
-            Worker removeWorker = card.getWorkers().stream()
-                .filter(
-                    worker -> worker.getUser().getId().equals(updateRequest.getRemoveWorkerId()))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
-            card.removeWorker(removeWorker);
-            updated = true;
+            Long removeWorkerId = updateRequest.getRemoveWorkerId();
+            removeWorkerFromCard(card, removeWorkerId);
         }
-
-        // 변경된 내용이 있을 경우에만 저장
-        if (updated) {
-            cardRepository.save(card);
-        }
+        cardRepository.save(card);
 
         return card;
+    }
+
+    @Transactional
+    public void removeWorkerFromCard(Card card, Long removeWorkerId) {
+
+        Worker removeWorker = workerRepository.findById(removeWorkerId)
+            .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
+
+        if (!removeWorker.getUser().getId().equals(card.getUser().getId())) {
+            throw new NoSuchElementException("해당 작업자가 카드에 존재하지 않습니다");
+        }
+
+        workerRepository.delete(removeWorker);
     }
 
     //카드 삭제

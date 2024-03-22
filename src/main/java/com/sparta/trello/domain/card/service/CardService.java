@@ -5,6 +5,7 @@ import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
+import com.sparta.trello.domain.card.dto.CardResponse;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.dto.CardUpdateRequest;
 import com.sparta.trello.domain.card.entity.Card;
@@ -124,8 +125,8 @@ public class CardService {
         cardRepository.delete(card);
     }
 
-
-    public void updatCardSequence(Long columnId, Long cardId,
+    @Transactional
+    public CardResponse updateCardSequence(Long columnId, Long cardId,
         CardMoveRequest request) {
         Card card = findCard(cardId);
 
@@ -142,6 +143,10 @@ public class CardService {
         }
 
         card.setSequence(between);
+        return CardResponse.builder()
+            .cardName(card.getCardName())
+            .sequence(card.getSequence())
+            .build();
     }
 
     public void moveCardToColumn(Long columnId, Long cardId, Long targetColumnId) {

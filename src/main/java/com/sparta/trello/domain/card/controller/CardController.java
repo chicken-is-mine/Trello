@@ -100,16 +100,16 @@ public class CardController {
 
     @Operation(summary = "카드 순서 변경", description = "선택한 카드의 순서를 변경합니다.")
     @PatchMapping("/cards/{cardId}/sequence")
-    public ResponseEntity<CommonResponse<Void>> updatCardSequence(
+    public ResponseEntity<CommonResponse<CardResponse>> updateCardSequence(
         @PathVariable Long boardId,
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @RequestBody CardMoveRequest request
     ) {
-        cardService.updatCardSequence(columnId, cardId, request);
+        CardResponse response = cardService.updateCardSequence(columnId, cardId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
-            CommonResponse.<Void>builder()
-                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+            CommonResponse.<CardResponse>builder()
+                .httpCode(HttpStatus.NO_CONTENT.value()).data(response).build());
     }
 
     @Operation(summary = "카드 컬럼 이동", description = "선택한 카드의 컬럼을 변경합니다.")

@@ -2,6 +2,7 @@ package com.sparta.trello.global.security;
 
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,4 +25,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 
+    public UserDetails loadUserByClaims(Claims info) {
+        User user = new User((long) (int) info.get("id"),info.getSubject(), info.get("userName").toString(),"",
+            String.valueOf(info.get("profile")));
+
+        return new UserDetailsImpl(user);
+    }
 }

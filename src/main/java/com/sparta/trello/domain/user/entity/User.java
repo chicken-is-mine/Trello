@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
@@ -43,6 +44,13 @@ public class User {
         this.email = email;
         this.profile = profile;
     }
+    public User(Long id,String email, String username, String profile) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.profile = profile;
+    }
+
 
     public void updateUser(String username, String profile) {
         this.username = username;

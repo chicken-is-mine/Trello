@@ -38,11 +38,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 log.error("Token Error");
                 return;
             }
-
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
-                setAuthentication(info.getSubject());
+                setAuthentication(info);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return;
@@ -52,17 +51,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    public void setAuthentication(String username) {
+    public void setAuthentication(Claims info) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(username);
+        Authentication authentication = createAuthentication(info);
         context.setAuthentication(authentication);
         log.info("인증처리");
         SecurityContextHolder.setContext(context);
     }
 
     // 인증 객체 생성
-    private Authentication createAuthentication(String username) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    private Authentication createAuthentication(Claims info) {
+        UserDetails userDetails = userDetailsService.loadUserByClaims(info);
         return new UsernamePasswordAuthenticationToken(userDetails, null,
             userDetails.getAuthorities());
     }

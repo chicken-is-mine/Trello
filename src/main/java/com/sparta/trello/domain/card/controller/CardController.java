@@ -34,6 +34,7 @@ public class CardController {
     @PostMapping("/cards")
     public ResponseEntity<CommonResponse<CardResponse>> createCard(
         @PathVariable Long columnId,
+        @PathVariable Long boardId,
         @RequestBody CardRequest request,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

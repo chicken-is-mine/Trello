@@ -18,7 +18,6 @@ public class ColumnRepositoryImpl implements CustomColumnRepository {
     public Columns findBySequence(Long boardId, Long sequence) {
         return queryFactory
             .selectFrom(columns)
-            .join(columns.board)
             .where(columns.sequence.eq(sequence), columns.board.boardId.eq(boardId))
             .fetchFirst();
     }
@@ -27,7 +26,6 @@ public class ColumnRepositoryImpl implements CustomColumnRepository {
     public List<Columns> findAllByBoardIdOrderBySequence(Long boardId) {
         return queryFactory
             .selectFrom(columns)
-            .join(columns.board)
             .where(columns.board.boardId.eq(boardId))
             .orderBy(columns.sequence.asc())
             .fetch();

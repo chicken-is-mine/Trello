@@ -34,11 +34,11 @@ public class BoardUser {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
     private BoardRoleEnum boardRole;
 
-    public BoardUser(Board board, User user,BoardRoleEnum boardRole) {
+    public BoardUser(Board board, User user, BoardRoleEnum boardRole) {
         this.board = board;
         this.user = user;
         this.boardRole = boardRole;

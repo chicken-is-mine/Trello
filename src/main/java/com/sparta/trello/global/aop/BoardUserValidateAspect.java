@@ -24,20 +24,20 @@ public class BoardUserValidateAspect {
 
     private final BoardUserJpaRepository boardUserJpaRepository;
 
-    @Pointcut("execution(* com.sparta.trello.domain.board.service.*.*(..)) "
-        + "&& !execution(* com.sparta.trello.domain.board.service.BoardService.createBoard(..))")
+    @Pointcut("execution(* com.sparta.trello.domain.board.controller.*.*(..)) "
+        + "&& !execution(* com.sparta.trello.domain.board.controller.BoardController.createBoard(..))")
     private void boardTransaction() {
     }
 
-    @Pointcut("execution(* com.sparta.trello.domain.card.service.*.*(..))")
+    @Pointcut("execution(* com.sparta.trello.domain.card.controller.*.*(..))")
     private void cardTransaction() {
     }
 
-    @Pointcut("execution(* com.sparta.trello.domain.column.service.*.*(..))")
+    @Pointcut("execution(* com.sparta.trello.domain.column.controller.*.*(..))")
     private void columnTransaction() {
     }
 
-    @Pointcut("execution(* com.sparta.trello.domain.comment.service.*.*(..))")
+    @Pointcut("execution(* com.sparta.trello.domain.comment.controller.*.*(..))")
     private void commentTransaction() {
     }
 

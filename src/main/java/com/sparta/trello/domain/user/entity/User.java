@@ -15,7 +15,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @Builder
-@ToString
+@ToString(exclude = "password")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "TB_USER")

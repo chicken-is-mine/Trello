@@ -5,7 +5,9 @@ import static com.querydsl.core.types.PathMetadataFactory.*;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
+
 import javax.annotation.processing.Generated;
+
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.PathInits;
 
@@ -39,6 +41,8 @@ public class QBoard extends EntityPathBase<Board> {
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final com.sparta.trello.domain.user.entity.QUser user;
+
+    public final NumberPath<Integer> version = createNumber("version", Integer.class);
 
     public QBoard(String variable) {
         this(Board.class, forVariable(variable), INITS);

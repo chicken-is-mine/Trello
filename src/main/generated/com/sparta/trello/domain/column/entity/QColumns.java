@@ -59,9 +59,7 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public QColumns(Class<? extends Columns> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.board =
-            inits.isInitialized("board") ? new com.sparta.trello.domain.board.entity.QBoard(
-                forProperty("board"), inits.get("board")) : null;
+        this.board = inits.isInitialized("board") ? new com.sparta.trello.domain.board.entity.QBoard(forProperty("board"), inits.get("board")) : null;
     }
 
 }

@@ -22,11 +22,20 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public static final QColumns columns = new QColumns("columns");
 
+    public final com.sparta.trello.global.entity.QTimestamped _super = new com.sparta.trello.global.entity.QTimestamped(
+        this);
+
     public final com.sparta.trello.domain.board.entity.QBoard board;
 
     public final NumberPath<Long> columnId = createNumber("columnId", Long.class);
 
     public final StringPath columnName = createString("columnName");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final NumberPath<Long> sequence = createNumber("sequence", Long.class);
 
@@ -48,7 +57,9 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public QColumns(Class<? extends Columns> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.board = inits.isInitialized("board") ? new com.sparta.trello.domain.board.entity.QBoard(forProperty("board"), inits.get("board")) : null;
+        this.board =
+            inits.isInitialized("board") ? new com.sparta.trello.domain.board.entity.QBoard(
+                forProperty("board"), inits.get("board")) : null;
     }
 
 }

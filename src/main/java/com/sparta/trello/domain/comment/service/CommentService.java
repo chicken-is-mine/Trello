@@ -3,10 +3,13 @@ package com.sparta.trello.domain.comment.service;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.comment.dto.CommentRequest;
+import com.sparta.trello.domain.comment.dto.CommentResponse;
 import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.comment.repository.CommentRepository;
 import com.sparta.trello.domain.user.entity.User;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +56,25 @@ public class CommentService {
             .orElseThrow(() -> new NullPointerException("존재 하지 않는 댓글입니다"));
 
         return comment;
+    }
+
+    public List<CommentResponse> getComments(Long cardId) {
+        findCard(cardId);
+        List<Comment> commentList = commentRepository.findByCardCardId(cardId);
+        return convertToDtoList(commentList);
+    }
+
+    private List<CommentResponse> convertToDtoList(List<Comment> commentList) {
+        List<CommentResponse> commentResponseDtoList = new ArrayList<>();
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(new CommentResponse(comment));
+        }
+        return commentResponseDtoList;
+    }
+
+    public Card findCard(Long cardId) {
+        Card card = cardRepository.findById(cardId)
+            .orElseThrow(() -> new NullPointerException("없는 카드입니다."));
+        return card;
     }
 }

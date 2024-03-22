@@ -1,5 +1,7 @@
 package com.sparta.trello.domain.card.service;
 
+import com.sparta.trello.domain.board.entity.Board;
+import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
@@ -10,8 +12,11 @@ import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
+import com.sparta.trello.domain.comment.dto.CommentResponse;
+import com.sparta.trello.domain.comment.service.CommentService;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +30,13 @@ public class CardService {
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final CommentService commentService;
 
     //카드 생성
     @Transactional
-    public Card createCard(Long columnId, CardRequest request, User user) {
+    public Card createCard(Long boardId, Long columnId, CardRequest request, User user) {
+        Board board = findBoard(boardId);
         Columns columns = findColumn(columnId);
 
         return cardRepository.save(new Card(request, columns, user));
@@ -36,19 +44,29 @@ public class CardService {
 
     //카드 요약
     @Transactional(readOnly = true)
-    public List<CardSummary> getCardSummary(Long columnId) {
+    public List<CardSummary> getCardSummary(Long boardId, Long columnId) {
+        findBoard(boardId);
         return cardRepository.findCardsSummaryByColumnId(columnId);
     }
 
     //카드 상세 정보
     @Transactional(readOnly = true)
-    public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
-        return cardRepository.findCardDetailsByColumnId(columnId, cardId);
+    public List<CardDetails> getCardDetails(Long boardId, Long columnId, Long cardId) {
+        List<CardDetails> cardDetailsList = cardRepository.findCardDetailsByColumnId(columnId,
+            cardId);
+        List<CardDetails> cardDetailsWithCommentsList = new ArrayList<>();
+        for (CardDetails cardDetails : cardDetailsList) {
+            List<CommentResponse> comments = commentService.getComments(cardId);
+            CardDetails cardDetailsWithComments = new CardDetails(cardDetails, comments);
+            cardDetailsWithCommentsList.add(cardDetailsWithComments);
+        }
+        return cardDetailsWithCommentsList;
     }
 
     //카드 업데이트
     @Transactional
-    public Card updateCard(Long columnId, Long cardId, CardUpdateRequest updateRequest, User user) {
+    public Card updateCard(Long boardId, Long columnId, Long cardId,
+        CardUpdateRequest updateRequest, User user) {
         findColumn(columnId);
         Card card = findCard(cardId);
 
@@ -103,7 +121,7 @@ public class CardService {
 
     //카드 삭제
     @Transactional
-    public void deleteCard(Long columnId, Long cardId, User user) {
+    public void deleteCard(Long boardId, Long columnId, Long cardId, User user) {
         findColumn(columnId);
 
         Card card = findCard(cardId);
@@ -112,7 +130,8 @@ public class CardService {
     }
 
 
-    public void updatCardSequence(Long columnId, Long cardId, CardMoveRequest request) {
+    public void updatCardSequence(Long boardId, Long columnId, Long cardId,
+        CardMoveRequest request) {
         Card card = findCard(cardId);
 
         Long between = (request.getPrevSequence() + request.getNextSequence()) / 2;
@@ -130,7 +149,7 @@ public class CardService {
         card.setSequence(between);
     }
 
-    public void moveCardToColumn(Long columnId, Long cardId, Long targetColumnId) {
+    public void moveCardToColumn(Long boardId, Long columnId, Long cardId, Long targetColumnId) {
         Card card = findCard(cardId);
         Columns targetColumn = findColumn(targetColumnId);
 
@@ -138,13 +157,18 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    private Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+            .orElseThrow(() -> new IllegalArgumentException("보드를 찾을 수 없습니다."));
+    }
+
     private Columns findColumn(Long columnId) {
         return columnRepository.findById(columnId)
-            .orElseThrow(() -> new IllegalArgumentException("Column not found"));
+            .orElseThrow(() -> new IllegalArgumentException("컬럼을 찾을 수 없습니다."));
     }
 
     private Card findCard(Long cardId) {
         return cardRepository.findById(cardId)
-            .orElseThrow(() -> new IllegalArgumentException("Card not found"));
+            .orElseThrow(() -> new IllegalArgumentException("카드를 찾을 수 없습니다."));
     }
 }

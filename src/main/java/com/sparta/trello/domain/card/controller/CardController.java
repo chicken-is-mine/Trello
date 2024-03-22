@@ -37,11 +37,12 @@ public class CardController {
     @Operation(summary = "카드 생성", description = "입력된 columnId에 카드를 생성합니다.")
     @PostMapping("/cards")
     public ResponseEntity<CommonResponse<CardResponse>> createCard(
+        @PathVariable Long boardId,
         @PathVariable Long columnId,
         @RequestBody CardRequest request,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        cardService.createCard(columnId, request, userDetails.getUser());
+        cardService.createCard(boardId, columnId, request, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<CardResponse>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -49,30 +50,34 @@ public class CardController {
 
     @Operation(summary = "카드 요약 정보 조회", description = "입력받은 columnId의 카드의 요약 정보를 출력합니다.")
     @GetMapping("/cards")
-    public ResponseEntity<List<CardSummary>> getCardSummary(@PathVariable Long columnId) {
-        List<CardSummary> cardSummaries = cardService.getCardSummary(columnId);
+    public ResponseEntity<List<CardSummary>> getCardSummary(
+        @PathVariable Long boardId,
+        @PathVariable Long columnId) {
+        List<CardSummary> cardSummaries = cardService.getCardSummary(boardId, columnId);
         return new ResponseEntity<>(cardSummaries, HttpStatus.OK);
     }
 
     @Operation(summary = "카드 상세 정보 조회", description = "선택한 카드의 상세 정보를 출력합니다.")
     @GetMapping("/cards/{cardId}")
     public ResponseEntity<List<CardDetails>> getCardDetails(
+        @PathVariable Long boardId,
         @PathVariable Long columnId,
         @PathVariable Long cardId
     ) {
-        List<CardDetails> cardDetails = cardService.getCardDetails(columnId, cardId);
+        List<CardDetails> cardDetails = cardService.getCardDetails(boardId, columnId, cardId);
         return new ResponseEntity<>(cardDetails, HttpStatus.OK);
     }
 
     @Operation(summary = "카드 수정", description = "선택한 카드의 원하는 정보를 수정합니다.")
     @PatchMapping("/cards/{cardId}")
     public ResponseEntity<CommonResponse<CardResponse>> updateCard(
+        @PathVariable Long boardId,
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @RequestBody CardUpdateRequest updateRequest,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        cardService.updateCard(columnId, cardId, updateRequest, userDetails.getUser());
+        cardService.updateCard(boardId, columnId, cardId, updateRequest, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<CardResponse>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -82,11 +87,12 @@ public class CardController {
     @Operation(summary = "카드 삭제", description = "카드를 삭제합니다.")
     @DeleteMapping("/cards/{cardId}")
     public ResponseEntity<CommonResponse<String>> deleteCard(
+        @PathVariable Long boardId,
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        cardService.deleteCard(columnId, cardId, userDetails.getUser());
+        cardService.deleteCard(boardId, columnId, cardId, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<String>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -95,11 +101,12 @@ public class CardController {
     @Operation(summary = "카드 순서 변경", description = "선택한 카드의 순서를 변경합니다.")
     @PatchMapping("/cards/{cardId}/sequence")
     public ResponseEntity<CommonResponse<Void>> updatCardSequence(
+        @PathVariable Long boardId,
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @RequestBody CardMoveRequest request
     ) {
-        cardService.updatCardSequence(columnId, cardId, request);
+        cardService.updatCardSequence(boardId, columnId, cardId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<Void>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());
@@ -108,11 +115,12 @@ public class CardController {
     @Operation(summary = "카드 컬럼 이동", description = "선택한 카드의 컬럼을 변경합니다.")
     @PatchMapping("/cards/{cardId}/move")
     public ResponseEntity<CommonResponse<String>> moveCardToColumn(
+        @PathVariable Long boardId,
         @PathVariable Long columnId,
         @PathVariable Long cardId,
         @RequestParam Long targetColumnId
     ) {
-        cardService.moveCardToColumn(columnId, cardId, targetColumnId);
+        cardService.moveCardToColumn(boardId, columnId, cardId, targetColumnId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
             CommonResponse.<String>builder()
                 .httpCode(HttpStatus.NO_CONTENT.value()).build());

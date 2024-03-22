@@ -12,7 +12,6 @@ import com.sparta.trello.domain.card.dto.CardInfo;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
-import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class CardRepositoryImpl implements CardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager entityManager;
 
 
     @Override
@@ -92,7 +90,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
         List<Tuple> results = queryFactory
             .select(card, worker.user.username)
             .from(card)
-            .leftJoin(card.workers, worker).fetchJoin()
+            .leftJoin(card.workers, worker)
             .where(card.column.columnId.eq(columnId).and(card.cardId.eq(cardId)))
             .fetch();
 
@@ -111,6 +109,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
                     cardEntity.getDescription(),
                     cardEntity.getColor(),
                     cardEntity.getDueDate(),
+                    new ArrayList<>(),
                     new ArrayList<>()
                 ));
 
@@ -127,7 +126,7 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
 //        List<Tuple> results = queryFactory
 //            .select(card, worker.user.username, comment)
 //            .from(card)
-//            .leftJoin(card.workers, worker).fetchJoin()
+//            .leftJoin(card.workers, worker)
 //            .leftJoin(comment).on(comment.card.eq(card))
 //            .where(card.column.columnId.eq(columnId).and(card.cardId.eq(cardId)))
 //            .fetch();

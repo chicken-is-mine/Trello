@@ -60,20 +60,14 @@ public class ColumnIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    UserService userService;
-    @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    BoardService boardService;
     @Autowired
     BoardRepository boardRepository;
 
     @Autowired
     BoardUserJpaRepository boardUserJpaRepository;
 
-    @Autowired
-    ColumnService columnService;
     @Autowired
     ColumnRepository columnRepository;
 

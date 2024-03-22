@@ -39,6 +39,8 @@ public class QColumns extends EntityPathBase<Columns> {
 
     public final NumberPath<Long> sequence = createNumber("sequence", Long.class);
 
+    public final NumberPath<Integer> version = createNumber("version", Integer.class);
+
     public QColumns(String variable) {
         this(Columns.class, forVariable(variable), INITS);
     }

@@ -10,6 +10,8 @@ import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.verify;
 
 import com.sparta.trello.domain.card.dto.CardRequest;
+import com.sparta.trello.domain.card.dto.CardResponse;
+import com.sparta.trello.domain.card.dto.CardUpdateRequest;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.card.repository.WorkerRepository;
@@ -84,6 +86,24 @@ public class CardServiceTest {
             NoSuchElementException.class, () -> cardService.createCard(columnId, request, null));
         verify(columnRepository, times(1)).findById(columnId);
         verify(cardRepository, never()).save(any(Card.class));
+    }
+
+    @Test
+    void updateCard_Success() {
+        // given
+        Columns columns = Columns.builder().columnId(100L).build();
+        Card card = Card.builder().cardId(200L).cardName("카드 테스트").sequence(1000L).build();
+        User user = User.builder().id(100L).username("유저").email("abc@gmail.com").build();
+        given(columnRepository.findById(100L)).willReturn(Optional.of(columns));
+        given(cardRepository.findById(200L)).willReturn(Optional.of(card));
+        String name = "카드 수정 테스트";
+
+        // when
+       Card card1 = cardService.updateCard(100L, 200L,
+            CardUpdateRequest.builder().cardName(name).build(), user);
+
+       // then
+        assertEquals(card.getCardName(), card1.getCardName());
     }
 
 }

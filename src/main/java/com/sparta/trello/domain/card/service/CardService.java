@@ -1,19 +1,27 @@
 package com.sparta.trello.domain.card.service;
 
+import com.sparta.trello.domain.board.entity.Board;
+import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
+import com.sparta.trello.domain.card.dto.CardResponse;
 import com.sparta.trello.domain.card.dto.CardSummary;
 import com.sparta.trello.domain.card.dto.CardUpdateRequest;
 import com.sparta.trello.domain.card.entity.Card;
 import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.card.repository.CardRepository;
+import com.sparta.trello.domain.card.repository.WorkerRepository;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
+import com.sparta.trello.domain.comment.dto.CommentResponse;
+import com.sparta.trello.domain.comment.service.CommentService;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +33,9 @@ public class CardService {
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final WorkerRepository workerRepository;
+    private final CommentService commentService;
 
     //카드 생성
     @Transactional
@@ -43,62 +54,65 @@ public class CardService {
     //카드 상세 정보
     @Transactional(readOnly = true)
     public List<CardDetails> getCardDetails(Long columnId, Long cardId) {
-        return cardRepository.findCardDetailsByColumnId(columnId, cardId);
+        List<CardDetails> cardDetailsList = cardRepository.findCardDetailsByColumnId(columnId,
+            cardId);
+        List<CardDetails> cardDetailsWithCommentsList = new ArrayList<>();
+        for (CardDetails cardDetails : cardDetailsList) {
+            List<CommentResponse> comments = commentService.getComments(cardId);
+            CardDetails cardDetailsWithComments = new CardDetails(cardDetails, comments);
+            cardDetailsWithCommentsList.add(cardDetailsWithComments);
+        }
+        return cardDetailsWithCommentsList;
     }
 
     //카드 업데이트
     @Transactional
-    public Card updateCard(Long columnId, Long cardId, CardUpdateRequest updateRequest, User user) {
+    public Card updateCard(Long columnId, Long cardId,
+        CardUpdateRequest updateRequest, User user) {
         findColumn(columnId);
         Card card = findCard(cardId);
 
-        boolean updated = false;
-        if (updateRequest.getCardName() != null && !updateRequest.getCardName()
-            .equals(card.getCardName())) {
+        if (updateRequest.getCardName() != null) {
             card.updateCardName(updateRequest.getCardName());
-            updated = true;
         }
-        if (updateRequest.getDescription() != null && !updateRequest.getDescription()
-            .equals(card.getDescription())) {
+        if (updateRequest.getDescription() != null) {
             card.updateDescription(updateRequest.getDescription());
-            updated = true;
         }
-        if (updateRequest.getColor() != null && !updateRequest.getColor().equals(card.getColor())) {
+        if (updateRequest.getColor() != null) {
             card.updateColor(updateRequest.getColor());
-            updated = true;
         }
-        if (updateRequest.getDueDate() != null && !updateRequest.getDueDate()
-            .equals(card.getDueDate())) {
+        if (updateRequest.getDueDate() != null) {
             card.updateDueDate(updateRequest.getDueDate());
-            updated = true;
         }
 
-        // 작업자 추가
         if (updateRequest.getWorkerId() != null) {
             User worker = userRepository.findById(updateRequest.getWorkerId())
                 .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
             Worker newWorker = new Worker(worker);
             card.addWorker(newWorker.getUser());
-            updated = true;
         }
 
         // 작업자 제거
         if (updateRequest.getRemoveWorkerId() != null) {
-            Worker removeWorker = card.getWorkers().stream()
-                .filter(
-                    worker -> worker.getUser().getId().equals(updateRequest.getRemoveWorkerId()))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
-            card.removeWorker(removeWorker);
-            updated = true;
+            Long removeWorkerId = updateRequest.getRemoveWorkerId();
+            removeWorkerFromCard(card, removeWorkerId);
         }
-
-        // 변경된 내용이 있을 경우에만 저장
-        if (updated) {
-            cardRepository.save(card);
-        }
+        cardRepository.save(card);
 
         return card;
+    }
+
+    @Transactional
+    public void removeWorkerFromCard(Card card, Long removeWorkerId) {
+
+        Worker removeWorker = workerRepository.findById(removeWorkerId)
+            .orElseThrow(() -> new NoSuchElementException("해당 ID에 해당하는 작업자를 찾을 수 없습니다"));
+
+        if (!removeWorker.getUser().getId().equals(card.getUser().getId())) {
+            throw new NoSuchElementException("해당 작업자가 카드에 존재하지 않습니다");
+        }
+
+        workerRepository.delete(removeWorker);
     }
 
     //카드 삭제
@@ -111,8 +125,9 @@ public class CardService {
         cardRepository.delete(card);
     }
 
-
-    public void updatCardSequence(Long columnId, Long cardId, CardMoveRequest request) {
+    @Transactional
+    public CardResponse updateCardSequence(Long columnId, Long cardId,
+        CardMoveRequest request) {
         Card card = findCard(cardId);
 
         Long between = (request.getPrevSequence() + request.getNextSequence()) / 2;
@@ -128,6 +143,10 @@ public class CardService {
         }
 
         card.setSequence(between);
+        return CardResponse.builder()
+            .cardName(card.getCardName())
+            .sequence(card.getSequence())
+            .build();
     }
 
     public void moveCardToColumn(Long columnId, Long cardId, Long targetColumnId) {
@@ -138,13 +157,18 @@ public class CardService {
         cardRepository.save(card);
     }
 
+    private Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId)
+            .orElseThrow(() -> new IllegalArgumentException("보드를 찾을 수 없습니다."));
+    }
+
     private Columns findColumn(Long columnId) {
         return columnRepository.findById(columnId)
-            .orElseThrow(() -> new IllegalArgumentException("Column not found"));
+            .orElseThrow(() -> new IllegalArgumentException("컬럼을 찾을 수 없습니다."));
     }
 
     private Card findCard(Long cardId) {
         return cardRepository.findById(cardId)
-            .orElseThrow(() -> new IllegalArgumentException("Card not found"));
+            .orElseThrow(() -> new IllegalArgumentException("카드를 찾을 수 없습니다."));
     }
 }

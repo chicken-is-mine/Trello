@@ -16,6 +16,4 @@ public interface CardRepositoryCustom {
     List<CardInfo> findByUser_Id(Long userId);
 
     List<Card> findAllByBoardId(Long boardId);
-
-//    List<CardDetails> findCardDetailsByColumnId(Long columnId, Long cardId);
 }

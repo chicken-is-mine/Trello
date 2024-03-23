@@ -2,7 +2,6 @@ package com.sparta.trello.domain.card.entity;
 
 import com.sparta.trello.domain.card.dto.CardRequest;
 import com.sparta.trello.domain.column.entity.Columns;
-import com.sparta.trello.domain.comment.entity.Comment;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.entity.Timestamped;
 import jakarta.persistence.CascadeType;
@@ -65,7 +64,8 @@ public class Card extends Timestamped {
     private List<Worker> workers;
 
 
-    public Card(String cardName, String description, String color, LocalDateTime dueDate, Long sequence, User user, Columns columns) {
+    public Card(String cardName, String description, String color, LocalDateTime dueDate,
+        Long sequence, User user, Columns columns) {
         this.cardName = cardName;
         this.description = description;
         this.color = color;

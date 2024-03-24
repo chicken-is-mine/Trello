@@ -14,16 +14,23 @@ import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.entity.BoardColorEnum;
 import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.card.dto.CardSummary;
+import com.sparta.trello.domain.card.entity.Card;
+import com.sparta.trello.domain.card.entity.QCard;
+import com.sparta.trello.domain.card.entity.Worker;
 import com.sparta.trello.domain.card.repository.CardRepository;
+import com.sparta.trello.domain.card.repository.WorkerRepository;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
+import com.sparta.trello.domain.comment.repository.CommentRepository;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
 import com.sparta.trello.global.config.QueryDslConfig;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -46,11 +53,18 @@ public class CardRepositoryTest {
     @Autowired
     UserRepository userRepository;
     @Autowired
+    WorkerRepository workerRepository;
+    @Autowired
+    CommentRepository commentRepository;
+    @Autowired
     JPAQueryFactory queryFactory;
+    @Mock
+    private EntityManager entityManager;
 
     private User user1, user2;
     private Board board1, board2;
     private Columns column1, column2;
+    private Worker worker1, worker2;
 
     @BeforeEach
     void setUp() {
@@ -79,10 +93,16 @@ public class CardRepositoryTest {
 
         column2 = Columns.builder().columnName("컬럼2").sequence(3000L).board(board2).build();
         columnRepository.save(column2);
+
+        worker1 = Worker.builder().workerId(1L).user(user1).build();
+        workerRepository.save(worker1);
+
+        worker2 = Worker.builder().workerId(2L).user(user2).build();
+        workerRepository.save(worker2);
     }
 
     @Test
-    void testGetCardDetails() {
+    void GetCardSummary() {
         // given
         Long columnId = column1.getColumnId();
 
@@ -138,6 +158,27 @@ public class CardRepositoryTest {
             assertEquals(1, secondCardSummary.getWorkers().size());
             assertEquals("유저2", secondCardSummary.getWorkers().get(0).getUsername());
         }
+    }
 
+    @Test
+    public void findBySequence() {
+        // given
+        Long columnId = column1.getColumnId();
+        cardRepository.save(
+            Card.builder().cardName("카드 1").sequence(1000L).column(column1).user(user1).build());
+        cardRepository.save(
+            Card.builder().cardName("카드 2").sequence(3000L).column(column2).user(user2).build());
+        Long sequence = 1000L;
+
+        // when
+        Card card = queryFactory
+            .selectFrom(QCard.card)
+            .where(QCard.card.sequence.eq(sequence), QCard.card.column.columnId.eq(columnId))
+            .fetchFirst();
+
+        //then
+        if (card != null) {
+            System.out.println(card);
+        }
     }
 }

@@ -39,3 +39,6 @@ out/
 # Ignore properties
 **.properties
 **.yml
+
+### SSH KEY ###
+*.pem

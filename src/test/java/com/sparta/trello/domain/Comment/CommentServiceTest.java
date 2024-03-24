@@ -55,10 +55,11 @@ public class CommentServiceTest {
         given(commentRepository.findById(Id)).willReturn(Optional.of(comment));
 
         //when
-        commentService.updateComment(Id,Id,comment2,user1);
+        commentService.updateComment(Id, Id, comment2, user1);
         //then
-        assertEquals(comment2.getCommentContent(),comment.getContent());
+        assertEquals(comment2.getCommentContent(), comment.getContent());
     }
+
     @Test
     @DisplayName("댓글 수정 실패 테스트")
     void updateCommentTest_FAIL() {
@@ -85,7 +86,7 @@ public class CommentServiceTest {
         });
         //then
 
-        assertEquals("댓글 작성자가 아닙니다. 댓글 수정 권한이 없습니다.",exception.getMessage());
+        assertEquals("댓글 작성자가 아닙니다. 댓글 수정 권한이 없습니다.", exception.getMessage());
 
 
     }

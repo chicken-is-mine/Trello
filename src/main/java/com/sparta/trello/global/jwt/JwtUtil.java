@@ -1,5 +1,6 @@
 package com.sparta.trello.global.jwt;
 
+import com.sparta.trello.domain.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -37,12 +38,15 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(String email) {
+    public String createToken(User user) {
         Date date = new Date();
 
         return BEARER_PREFIX +
             Jwts.builder()
-                .setSubject(email) // 사용자 식별자값(ID)
+                .setSubject(user.getEmail()) // 사용자 식별자값(ID)
+                .claim("id",user.getId())
+                .claim("userName",user.getUsername())
+                .claim(("profile"),user.getProfile())
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                 .setIssuedAt(date) // 발급일
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘

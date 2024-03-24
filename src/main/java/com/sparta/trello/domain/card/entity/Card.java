@@ -82,6 +82,7 @@ public class Card extends Timestamped {
         this.user = user;
     }
 
+
     public void updateCardName(String cardName) {
         this.cardName = cardName;
     }

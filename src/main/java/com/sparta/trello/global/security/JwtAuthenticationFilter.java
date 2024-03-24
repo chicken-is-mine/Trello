@@ -2,12 +2,15 @@ package com.sparta.trello.global.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.trello.domain.user.dto.LoginRequest;
+import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.global.jwt.JwtMessage;
 import com.sparta.trello.global.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,9 +53,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request,
         HttpServletResponse response, FilterChain chain, Authentication authResult)
         throws IOException {
-        String email = ((UserDetailsImpl) authResult.getPrincipal()).getEmail();
+        User user = ((UserDetailsImpl) authResult.getPrincipal()).getUser();
 
-        String token = jwtUtil.createToken(email);
+        String token = jwtUtil.createToken(user);
         response.addHeader(jwtUtil.AUTHORIZATION_HEADER, token);
 
         jwtMessage.messageToClient(response, 200, "로그인 성공", "success");

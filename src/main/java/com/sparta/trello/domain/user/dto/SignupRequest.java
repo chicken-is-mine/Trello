@@ -2,12 +2,14 @@ package com.sparta.trello.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Email;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class SignupRequest {
 
     @Email

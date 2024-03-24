@@ -97,7 +97,7 @@ public class BoardServiceTest {
         .color(newColor)
         .build();
     User user = new User(userId, "test@naver.com", "testUser", "Password123!", "profile");
-    Board board = new Board(boardId, newBoardName, newDescription, BoardColorEnum.fromValue(1),
+    Board board = new Board(boardId, newBoardName, newDescription, BoardColorEnum.fromValue(1),0,
         user);
     board.setBoardId(boardId);
 
@@ -119,7 +119,7 @@ public class BoardServiceTest {
     Long boardId = 1L;
     Long userId = 1L;
     User user = new User(userId, "test@example.com", "testUser", "password", "profile1");
-    Board board = new Board(boardId, "boardName", "description", BoardColorEnum.fromValue(1), user);
+    Board board = new Board(boardId, "boardName", "description", BoardColorEnum.fromValue(1), 0,user);
     board.setBoardId(boardId);
 
     when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
@@ -138,7 +138,7 @@ public class BoardServiceTest {
     Long boardId = 1L;
     Long userId = 1L;
     User user = new User(userId, "test@example.com", "testUser", "password", "profile");
-    Board board = new Board(boardId, "boardName", "description", BoardColorEnum.fromValue(1), user);
+    Board board = new Board(boardId, "boardName", "description", BoardColorEnum.fromValue(1), 0,user);
     board.setBoardId(boardId);
     BoardUser boardUser = new BoardUser(board, user, BoardRoleEnum.MEMBER);
     List<Columns> columns = Arrays.asList(

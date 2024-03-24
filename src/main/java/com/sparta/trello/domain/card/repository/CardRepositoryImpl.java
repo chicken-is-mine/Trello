@@ -120,9 +120,8 @@ public class CardRepositoryImpl implements CardRepositoryCustom {
             }
         });
 
-        // If cardDetailsMap doesn't contain the requested cardId, retrieve data from the database
         if (!cardDetailsMap.containsKey(cardId)) {
-            // Fetch card details directly from the database
+
             Card cardEntity = entityManager.find(Card.class, cardId);
 
             if (cardEntity != null) {

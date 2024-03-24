@@ -33,7 +33,6 @@ public class CardService {
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
     private final UserRepository userRepository;
-    private final BoardRepository boardRepository;
     private final WorkerRepository workerRepository;
     private final CommentService commentService;
 
@@ -157,18 +156,13 @@ public class CardService {
         cardRepository.save(card);
     }
 
-    private Board findBoard(Long boardId) {
-        return boardRepository.findById(boardId)
-            .orElseThrow(() -> new IllegalArgumentException("보드를 찾을 수 없습니다."));
-    }
-
     private Columns findColumn(Long columnId) {
         return columnRepository.findById(columnId)
-            .orElseThrow(() -> new IllegalArgumentException("컬럼을 찾을 수 없습니다."));
+            .orElseThrow(() -> new NoSuchElementException("컬럼을 찾을 수 없습니다."));
     }
 
     private Card findCard(Long cardId) {
         return cardRepository.findById(cardId)
-            .orElseThrow(() -> new IllegalArgumentException("카드를 찾을 수 없습니다."));
+            .orElseThrow(() -> new NoSuchElementException("카드를 찾을 수 없습니다."));
     }
 }

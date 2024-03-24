@@ -11,8 +11,6 @@ public interface BoardUserJpaRepository extends JpaRepository<BoardUser, Long> {
 
     BoardUser findByBoardAndUser(Board board, User user);
 
-    List<BoardUser> findByBoard(Board board);
-
     @Query("select bu from BoardUser bu where bu.board.boardId = ?1 and bu.user.id = ?2")
     BoardUser findByBoardIdAndUserId(Long boardId, Long userId);
 }

@@ -82,11 +82,6 @@ public class Card extends Timestamped {
         this.user = user;
     }
 
-    public Card(long id, String cardName,long sequence) {
-        this.cardId = id;
-        this.cardName = cardName;
-        this.sequence = sequence;
-    }
 
     public void updateCardName(String cardName) {
         this.cardName = cardName;

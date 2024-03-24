@@ -39,7 +39,6 @@ public class CardController {
     public ResponseEntity<CommonResponse<CardResponse>> createCard(
         @PathVariable Long boardId,
         @PathVariable Long columnId,
-        @PathVariable Long boardId,
         @RequestBody CardRequest request,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

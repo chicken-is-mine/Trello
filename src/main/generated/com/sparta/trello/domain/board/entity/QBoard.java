@@ -40,6 +40,8 @@ public class QBoard extends EntityPathBase<Board> {
 
     public final com.sparta.trello.domain.user.entity.QUser user;
 
+    public final NumberPath<Integer> version = createNumber("version", Integer.class);
+
     public QBoard(String variable) {
         this(Board.class, forVariable(variable), INITS);
     }

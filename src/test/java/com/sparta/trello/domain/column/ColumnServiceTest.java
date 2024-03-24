@@ -1,7 +1,6 @@
 package com.sparta.trello.domain.column;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.never;
@@ -11,22 +10,16 @@ import static org.mockito.BDDMockito.verify;
 import com.sparta.trello.domain.board.entity.Board;
 import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
-import com.sparta.trello.domain.column.dto.ModifyColumnSequenceRequest;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
 import com.sparta.trello.domain.column.service.ColumnService;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @ExtendWith(MockitoExtension.class)
 public class ColumnServiceTest {

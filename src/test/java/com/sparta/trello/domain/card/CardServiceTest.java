@@ -253,6 +253,4 @@ public class CardServiceTest {
 
         assertEquals(targetColumn, card.getColumn());
     }
-
-
 }

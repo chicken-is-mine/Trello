@@ -14,6 +14,4 @@ public class InfoResponse {
     private String profile;
     private List<BoardInfo> boards;
     private List<CardInfo> cards;
-
-
 }

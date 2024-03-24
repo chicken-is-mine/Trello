@@ -87,9 +87,5 @@ public class CommentServiceTest {
         //then
 
         assertEquals("댓글 작성자가 아닙니다. 댓글 수정 권한이 없습니다.", exception.getMessage());
-
-
     }
-
-
 }

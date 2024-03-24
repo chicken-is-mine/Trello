@@ -17,5 +17,4 @@ public class GetBoardResponse {
     private BoardColorEnum color;
     private List<ColumnResponse> columns;
     private List<CardResponse> cards;
-
 }

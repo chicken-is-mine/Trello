@@ -16,16 +16,13 @@ import com.sparta.trello.domain.board.entity.BoardRoleEnum;
 import com.sparta.trello.domain.board.entity.BoardUser;
 import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.board.repository.BoardUserJpaRepository;
-import com.sparta.trello.domain.board.service.BoardService;
 import com.sparta.trello.domain.column.dto.CreateColumnRequest;
 import com.sparta.trello.domain.column.dto.ModifyColumnNameRequest;
 import com.sparta.trello.domain.column.dto.ModifyColumnSequenceRequest;
 import com.sparta.trello.domain.column.entity.Columns;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
-import com.sparta.trello.domain.column.service.ColumnService;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
-import com.sparta.trello.domain.user.service.UserService;
 import com.sparta.trello.global.security.UserDetailsImpl;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -43,12 +40,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2, replace = AutoConfigureTestDatabase.Replace.ANY)
 @TestPropertySource("classpath:application-test.properties")
 public class ColumnIntegrationTest {
@@ -124,6 +119,7 @@ public class ColumnIntegrationTest {
                     .accept(MediaType.APPLICATION_JSON)
                     .principal(principal))
             .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.data.columnName").value(request.getColumnName()))
             .andDo(print());
     }
 
@@ -147,6 +143,7 @@ public class ColumnIntegrationTest {
                     .accept(MediaType.APPLICATION_JSON)
                     .principal(principal))
             .andExpect(status().isNoContent())
+            .andExpect(jsonPath("$.data.columnName").value(request.getColumnName()))
             .andDo(print());
     }
 

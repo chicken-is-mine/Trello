@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomBoardRepository {
 
-  List<User> findExistingMemberByBoard(Board board);
+    List<User> findExistingMemberByBoard(Board board);
 
-  List<User> findUsersByIds(List<Long> userIds);
+    List<User> findUsersByIds(List<Long> userIds);
 
-  List<BoardInfo> findByUser_Id(Long userId);
+    List<BoardInfo> findByUser_Id(Long userId);
 
-  void deleteBoardAndRelateEntities(Long boardId);
+    void deleteBoardAndRelateEntities(Long boardId);
 }

@@ -1,7 +1,6 @@
 package com.sparta.trello.domain.column;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 
 import com.sparta.trello.domain.board.entity.Board;
@@ -17,7 +16,6 @@ import com.sparta.trello.domain.column.service.ColumnService;
 import com.sparta.trello.domain.user.entity.User;
 import com.sparta.trello.domain.user.repository.UserRepository;
 import com.sparta.trello.global.aop.BoardUserValidateAspect;
-import jakarta.persistence.Column;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;

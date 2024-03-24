@@ -24,7 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new UserDetailsImpl(user);
     }
 
-
     public UserDetails loadUserByClaims(Claims info) {
         User user = new User((long) (int) info.get("id"),info.getSubject(), info.get("userName").toString(),"",
             String.valueOf(info.get("profile")));

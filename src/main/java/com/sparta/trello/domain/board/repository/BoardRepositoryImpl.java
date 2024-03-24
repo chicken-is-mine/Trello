@@ -12,8 +12,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.trello.domain.board.dto.BoardInfo;
 import com.sparta.trello.domain.board.entity.Board;
-import com.sparta.trello.domain.comment.entity.Comment;
-import com.sparta.trello.domain.comment.entity.QComment;
 import com.sparta.trello.domain.user.entity.User;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 @Repository
 public class BoardRepositoryImpl implements CustomBoardRepository {
-
 
     private final JPAQueryFactory queryFactory;
 
@@ -75,5 +72,4 @@ public class BoardRepositoryImpl implements CustomBoardRepository {
             .where(board.boardId.eq(boardId))
             .execute();
     }
-
 }

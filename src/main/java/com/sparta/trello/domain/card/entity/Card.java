@@ -49,7 +49,7 @@ public class Card extends Timestamped {
     @Column
     private LocalDateTime dueDate;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private Long sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -75,12 +75,11 @@ public class CommentController {
                 .data("댓글이 삭제되었습니다")
                 .build());
     }
+
     @Operation(summary = "댓글 조회", description = "cardId와 일치하는 댓글 목록을 불러옵니다.")
     @GetMapping
     public List<CommentResponse> getComments(
         @PathVariable Long cardId) {
         return commentService.getComments(cardId);
     }
-
-
 }

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class CardResponse {
+
     private String cardName;
     private String description;
     private Long sequence;

@@ -32,32 +32,32 @@ import lombok.ToString;
 @Table(name = "TB_BOARD")
 public class Board extends Timestamped {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long boardId;
-  @Column(nullable = false)
-  private String boardName;
-  @Column(nullable = false)
-  private String description;
-  @Column(nullable = false)
-  @Enumerated(EnumType.ORDINAL)
-  private BoardColorEnum color;
-  @Version
-  private int version;
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long boardId;
+    @Column(nullable = false)
+    private String boardName;
+    @Column(nullable = false)
+    private String description;
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private BoardColorEnum color;
+    @Version
+    private int version;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-  public Board(BoardRequest boardRequest, BoardColorEnum color, User user) {
-    this.boardName = boardRequest.getBoardName();
-    this.description = boardRequest.getDescription();
-    this.color = color;
-    this.user = user;
-  }
+    public Board(BoardRequest boardRequest, BoardColorEnum color, User user) {
+        this.boardName = boardRequest.getBoardName();
+        this.description = boardRequest.getDescription();
+        this.color = color;
+        this.user = user;
+    }
 
-  public void update(String boardName, String description, BoardColorEnum color) {
-    this.boardName = boardName;
-    this.description = description;
-    this.color = color;
-  }
+    public void update(String boardName, String description, BoardColorEnum color) {
+        this.boardName = boardName;
+        this.description = description;
+        this.color = color;
+    }
 }

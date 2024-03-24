@@ -97,5 +97,4 @@ public class BoardOptimisticLockTest {
         // then
         System.out.println("낙관적 락 실패 횟수 : " + optimisticLockFailures.get());
     }
-
 }

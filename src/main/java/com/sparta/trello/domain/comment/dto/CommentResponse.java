@@ -15,7 +15,6 @@ public class CommentResponse {
     private String userName;
     private String content;
 
-
     public CommentResponse(Comment comment) {
         this.userName = comment.getUser().getUsername();
         this.content = comment.getContent();

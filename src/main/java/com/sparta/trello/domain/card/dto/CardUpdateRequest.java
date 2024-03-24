@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class CardUpdateRequest {
+
     private String cardName;
     private String description;
     private String color;

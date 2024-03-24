@@ -44,9 +44,9 @@ public class JwtUtil {
         return BEARER_PREFIX +
             Jwts.builder()
                 .setSubject(user.getEmail()) // 사용자 식별자값(ID)
-                .claim("id",user.getId())
-                .claim("userName",user.getUsername())
-                .claim(("profile"),user.getProfile())
+                .claim("id", user.getId())
+                .claim("userName", user.getUsername())
+                .claim(("profile"), user.getProfile())
                 .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                 .setIssuedAt(date) // 발급일
                 .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -80,6 +80,4 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-
-
 }

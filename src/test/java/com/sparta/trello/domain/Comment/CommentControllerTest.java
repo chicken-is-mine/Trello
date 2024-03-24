@@ -42,7 +42,7 @@ import org.springframework.web.context.WebApplicationContext;
         )
     }
 )
-public class CommentController {
+public class CommentControllerTest {
 
     private MockMvc mvc;
     private Principal principal;
@@ -132,6 +132,4 @@ public class CommentController {
             .andExpect(status().isOk())
             .andDo(print());
     }
-
-
 }

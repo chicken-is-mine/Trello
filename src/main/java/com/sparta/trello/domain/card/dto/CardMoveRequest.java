@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CardMoveRequest {
+
     private Long prevSequence;
     private Long nextSequence;
 }

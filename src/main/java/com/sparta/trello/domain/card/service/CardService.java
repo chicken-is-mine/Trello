@@ -1,7 +1,5 @@
 package com.sparta.trello.domain.card.service;
 
-import com.sparta.trello.domain.board.entity.Board;
-import com.sparta.trello.domain.board.repository.BoardRepository;
 import com.sparta.trello.domain.card.dto.CardDetails;
 import com.sparta.trello.domain.card.dto.CardMoveRequest;
 import com.sparta.trello.domain.card.dto.CardRequest;
@@ -21,7 +19,6 @@ import com.sparta.trello.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

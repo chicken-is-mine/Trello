@@ -69,5 +69,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         jwtMessage.messageToClient(response, 400, "로그인 실패", "error");
 
     }
-
 }

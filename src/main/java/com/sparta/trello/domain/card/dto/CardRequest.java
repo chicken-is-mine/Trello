@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class CardRequest {
+
     private String cardName;
     private Long sequence;
 }

@@ -45,7 +45,8 @@ public class User {
         this.email = email;
         this.profile = profile;
     }
-    public User(Long id,String email, String username, String profile) {
+
+    public User(Long id, String email, String username, String profile) {
         this.id = id;
         this.username = username;
         this.email = email;

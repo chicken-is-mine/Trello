@@ -1,5 +1,8 @@
 package com.sparta.trello.domain.card;
 
+import static com.sparta.trello.domain.card.entity.QCard.card;
+import static com.sparta.trello.domain.card.entity.QWorker.worker;
+import static com.sparta.trello.domain.comment.entity.QComment.comment;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -180,5 +183,18 @@ public class CardRepositoryTest {
         if (card != null) {
             System.out.println(card);
         }
+    }
+
+    @Test
+    public void getCardsByColumnId() {
+        queryFactory
+            .select(card.cardId, card.cardName, worker.user.username, comment.count())
+            .from(card)
+            .leftJoin(card.workers, worker)
+            .leftJoin(comment).on(card.eq(comment.card))
+            .leftJoin(worker.user)
+            .where(card.column.columnId.eq(1L))
+            .groupBy(card.cardId, card.cardName, worker.user.username)
+            .fetch();
     }
 }

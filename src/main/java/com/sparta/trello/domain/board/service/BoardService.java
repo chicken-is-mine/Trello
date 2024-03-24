@@ -14,11 +14,9 @@ import com.sparta.trello.domain.card.repository.CardRepository;
 import com.sparta.trello.domain.column.dto.ColumnResponse;
 import com.sparta.trello.domain.column.repository.ColumnRepository;
 import com.sparta.trello.domain.user.entity.User;
-
+import com.sparta.trello.domain.user.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.sparta.trello.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +37,7 @@ public class BoardService {
         Board board = new Board(boardRequest, color, user);
         Board savedBoard = boardRepository.save(board);
 
-        BoardUser ownerBoardUser = new BoardUser(savedBoard, user,BoardRoleEnum.OWNER);
+        BoardUser ownerBoardUser = new BoardUser(savedBoard, user, BoardRoleEnum.OWNER);
         boardUserJpaRepository.save(ownerBoardUser);
 
         return new BoardResponse(savedBoard);
@@ -48,8 +46,7 @@ public class BoardService {
 
     public BoardResponse updateBoard(Long boardId, BoardRequest boardRequest, Long userId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드입니다."));
-
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드입니다."));
 
         if (!board.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("수정 권한이 없습니다.");
@@ -64,7 +61,7 @@ public class BoardService {
 
     public void deleteBoard(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드 입니다."));
 
         if (!board.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("삭제 권한이 없습니다.");
@@ -76,10 +73,10 @@ public class BoardService {
 
     public void inviteUser(Long boardId, List<Long> userIds, Long userId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
 
         User member = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         if (!board.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("초대 권한이 없습니다.");
@@ -90,13 +87,13 @@ public class BoardService {
         List<User> users = boardRepository.findUsersByIds(userIds);
 
         List<User> newMembers = users.stream()
-                .filter(user -> !existingMembers.contains(user))
-                .toList();
+            .filter(user -> !existingMembers.contains(user))
+            .toList();
 
         if (!newMembers.isEmpty()) {
             boardUserJpaRepository.saveAll(newMembers.stream()
-                    .map(user -> new BoardUser(board, user, BoardRoleEnum.MEMBER))
-                    .collect(Collectors.toList()));
+                .map(user -> new BoardUser(board, user, BoardRoleEnum.MEMBER))
+                .collect(Collectors.toList()));
         } else {
             throw new IllegalArgumentException("이미 초대된 사용자가 있습니다.");
         }
@@ -105,26 +102,20 @@ public class BoardService {
     @Transactional(readOnly = true)
     public GetBoardResponse getBoardList(Long boardId, User user) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
-
-        BoardUser boardUser = boardUserJpaRepository.findByBoardAndUser(board, user);
-        if (boardUser == null || !boardUser.getBoardRole().equals(BoardRoleEnum.OWNER) &&
-                !boardUser.getBoardRole().equals(BoardRoleEnum.MEMBER)) {
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시판입니다."));
 
         List<ColumnResponse> columns = columnRepository.findAllByBoardIdOrderBySequence(boardId)
-                .stream()
-                .map(column -> new ColumnResponse(column.getColumnId(), column.getColumnName(),
-                        column.getSequence()))
-                .collect(Collectors.toList());
+            .stream()
+            .map(column -> new ColumnResponse(column.getColumnId(), column.getColumnName(),
+                column.getSequence()))
+            .collect(Collectors.toList());
 
         List<CardResponse> cards = cardRepository.findAllByBoardId(boardId).stream()
-                .map(CardResponse::new)
-                .collect(Collectors.toList());
+            .map(CardResponse::new)
+            .collect(Collectors.toList());
 
         return new GetBoardResponse(board.getBoardId(), board.getBoardName(),
-                board.getDescription(),
-                board.getColor(), columns, cards);
+            board.getDescription(),
+            board.getColor(), columns, cards);
     }
 }

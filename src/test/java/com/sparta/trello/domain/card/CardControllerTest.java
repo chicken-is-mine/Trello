@@ -66,6 +66,7 @@ public class CardControllerTest {
 
         mockSetup();
     }
+
     User user;
     Columns columns;
 
@@ -106,14 +107,15 @@ public class CardControllerTest {
         Long workerId = 1000L;
         LocalDateTime dueDate = LocalDateTime.now();
         CardUpdateRequest request = CardUpdateRequest.builder()
-            .cardName(cardName).description(description).color(color).workerId(workerId).dueDate(dueDate).build();
+            .cardName(cardName).description(description).color(color).workerId(workerId)
+            .dueDate(dueDate).build();
 
         String cardJson = objectMapper.writeValueAsString(request);
 
         // when - then
         mockMvc.perform(patch("/api/v1/boards/100/columns/500/cards/1000").content(cardJson)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON).principal(principal))
             .andExpect(status().isNoContent())
             .andDo(print());
     }
@@ -138,7 +140,7 @@ public class CardControllerTest {
     @DisplayName("Delete Card")
     void deleteCard() throws Exception {
         mockMvc.perform(delete("/api/v1/boards/100/columns/500/cards/1000")
-            .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .accept(MediaType.APPLICATION_JSON).principal(principal))
             .andExpect(status().isNoContent())
             .andDo(print());
     }
@@ -152,9 +154,10 @@ public class CardControllerTest {
 
         String cardJson = objectMapper.writeValueAsString(request);
 
-        mockMvc.perform(patch("/api/v1/boards/100/columns/500/cards/1000/sequence").content(cardJson)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON).principal(principal))
+        mockMvc.perform(
+                patch("/api/v1/boards/100/columns/500/cards/1000/sequence").content(cardJson)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON).principal(principal))
             .andExpect(status().isNoContent())
             .andDo(print());
     }
@@ -164,9 +167,8 @@ public class CardControllerTest {
     void moveCardToColumn() throws Exception {
         mockMvc.perform(patch("/api/v1/boards/100/columns/500/cards/1000/move")
                 .param("targetColumnId", "2")
-            .accept(MediaType.APPLICATION_JSON).principal(principal))
+                .accept(MediaType.APPLICATION_JSON).principal(principal))
             .andExpect(status().isNoContent())
             .andDo(print());
     }
-
 }

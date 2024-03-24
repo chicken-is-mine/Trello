@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class CardSummary {
+
     private Long cardId;
     private String cardName;
     private List<Worker> workers;

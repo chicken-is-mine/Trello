@@ -43,9 +43,9 @@ public class CardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         cardService.createCard(columnId, request, userDetails.getUser());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT.value()).body(
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(
             CommonResponse.<CardResponse>builder()
-                .httpCode(HttpStatus.NO_CONTENT.value()).build());
+                .httpCode(HttpStatus.CREATED.value()).build());
     }
 
     @Operation(summary = "카드 요약 정보 조회", description = "입력받은 columnId의 카드의 요약 정보를 출력합니다.")

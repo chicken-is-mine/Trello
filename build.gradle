@@ -22,6 +22,10 @@ repositories {
 }
 
 dependencies {
+	// Redis
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//	implementation 'org.redisson:redisson-spring-boot-starter:3.27.1'
+	//Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 	// queryDSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -44,7 +48,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation 'org.mockito:mockito-core:4.8.0'
+	//testImplementation 'org.mockito:mockito-core:4.8.0'
+	testImplementation 'org.mockito:mockito-core:4.9.0'
+	testImplementation 'org.awaitility:awaitility:4.2.0'
 	testRuntimeOnly 'com.h2database:h2'
 }
 def generated = 'src/main/generated'

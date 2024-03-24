@@ -64,7 +64,8 @@ public class Card extends Timestamped {
     private List<Worker> workers;
 
 
-    public Card(String cardName, String description, String color, LocalDateTime dueDate, Long sequence, User user, Columns columns) {
+    public Card(String cardName, String description, String color, LocalDateTime dueDate,
+        Long sequence, User user, Columns columns) {
         this.cardName = cardName;
         this.description = description;
         this.color = color;

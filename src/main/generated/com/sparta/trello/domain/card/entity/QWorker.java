@@ -26,6 +26,8 @@ public class QWorker extends EntityPathBase<Worker> {
 
     public final com.sparta.trello.domain.user.entity.QUser user;
 
+    public final StringPath username = createString("username");
+
     public final NumberPath<Long> workerId = createNumber("workerId", Long.class);
 
     public QWorker(String variable) {

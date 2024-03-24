@@ -1,5 +1,6 @@
 package com.sparta.trello.domain.card.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.trello.domain.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,14 +28,19 @@ public class Worker {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long workerId;
+
+    private String username;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
+    @JsonIgnore
     private Card card;
 
     public Worker(User user) {
@@ -44,4 +51,9 @@ public class Worker {
         this.user = user;
         this.card = card;
     }
+
+    public Worker(String username) {
+        this.username = username;
+    }
+
 }
